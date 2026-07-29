@@ -39,6 +39,10 @@
   let resizeObserver = null;
   let resizeFrame = 0;
 
+  let lastWindowWidth = window.innerWidth;
+  let lastWindowHeight = window.innerHeight;
+  let lockedYearMonthSpan = null;
+
   function resolvedTheme() {
     if (state.settings.theme !== 'system') return state.settings.theme;
     return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
@@ -75,8 +79,8 @@
     return 13;
   }
 
-  function adaptiveYearRange(parts) {
-    const monthSpan = adaptiveMonthSpan();
+  function adaptiveYearRange(parts, requestedSpan = adaptiveMonthSpan()) {
+    const monthSpan = requestedSpan;
     if (monthSpan === 13) {
       const start = Calendar.findYearStart(parts.year);
       return {
@@ -113,7 +117,9 @@
     let monthSpan = 1;
 
     if (view === 'year') {
-      ({ start, end, title, monthSpan } = adaptiveYearRange(parts));
+      const span = lockedYearMonthSpan ?? adaptiveMonthSpan();
+
+      ({ start, end, title, monthSpan } = adaptiveYearRange(parts, span));
     } else if (view === 'month') {
       start = Calendar.ethiopianToGregorian(parts.year, parts.month, 1);
       end = Calendar.addDays(start, Calendar.getMonthLength(parts.year, parts.month) - 1);
@@ -144,10 +150,21 @@
 
   function render() {
     if (!state) return;
-    if (lastView && lastView !== state.settings.gridView) focusDate = Calendar.today();
+    if (lastView && lastView !== state.settings.gridView) {
+      focusDate = Calendar.today();
+
+      if (state.settings.gridView === 'year') {
+        lockedYearMonthSpan = adaptiveMonthSpan();
+      }
+    }
+
     lastView = state.settings.gridView;
     applyAppearance();
     currentRange = makeRange();
+
+    if (state.settings.gridView === 'year') {
+      lockedYearMonthSpan = currentRange.monthSpan;
+    }
     elements.fittedGrid.classList.toggle('timeline-layout', currentRange.layout === 'timeline');
     elements.fittedGrid.classList.toggle('calendar-layout', currentRange.layout === 'calendar');
     elements.widgetShell.dataset.view = state.settings.gridView;
@@ -316,85 +333,196 @@
 
   function fitGrid() {
     if (!currentRange || !state) return;
-    const shellStyle = window.getComputedStyle(elements.widgetShell);
-    const pixel = (value, fallback) => {
-      const parsed = Number.parseFloat(value || '');
-      return Number.isFinite(parsed) ? parsed : fallback;
-    };
-    const verticalPadding =
-      pixel(shellStyle.paddingTop, 12) +
-      pixel(shellStyle.paddingBottom, 12);
-    const borderHeight =
-      pixel(shellStyle.borderTopWidth, 1) +
-      pixel(shellStyle.borderBottomWidth, 1);
-    const width = viewportWidth();
+
+    const clamp = (minimum, value, maximum) =>
+      Math.max(minimum, Math.min(maximum, value));
+
+    const width = Math.max(1, elements.gridViewport.clientWidth);
+    const height = Math.max(1, elements.gridViewport.clientHeight);
+
     const isCalendar = currentRange.layout === 'calendar';
-    const gap = isCalendar ? Math.max(3, Math.min(8, width / 115)) : width < 760 ? 3 : 4;
-    let labelWidth = !isCalendar && state.settings.gridShowWeekdays ? 40 : 0;
-    let cell;
-    let weekdayHeight = 0;
+    const columns = currentRange.columns;
+    const rows = currentRange.rows;
+
+    /*
+     * Width and height are calculated separately.
+     *
+     * Width controls horizontal cell size.
+     * Height controls vertical cell size.
+     */
+    const gap = clamp(
+      2,
+      Math.min(
+        width / (isCalendar ? 115 : 210),
+        height / 75
+      ),
+      isCalendar ? 8 : 5
+    );
+
+    let labelWidth = 0;
     let monthHeight = 0;
+    let weekdayHeight = 0;
+    let cellWidth;
+    let cellHeight;
 
     if (isCalendar) {
-      cell = Math.max(34, Math.min(112, (width - gap * 6) / 7));
+      monthHeight = state.settings.gridShowMonths
+        ? clamp(14, height * 0.1, 34)
+        : 0;
+
       weekdayHeight = state.settings.gridShowWeekdays
-        ? Math.max(20, Math.min(30, cell * 0.3))
+        ? clamp(14, height * 0.08, 30)
         : 0;
-      monthHeight = state.settings.gridShowMonths
-        ? Math.max(22, Math.min(34, cell * 0.34))
-        : 0;
+
+      cellWidth = Math.max(
+        4,
+        (width - gap * (columns - 1)) / columns
+      );
+
+      const verticalExtras =
+        monthHeight +
+        (monthHeight > 0 ? gap : 0) +
+        weekdayHeight +
+        (weekdayHeight > 0 ? gap : 0) +
+        gap * (rows - 1);
+
+      cellHeight = Math.max(
+        4,
+        (height - verticalExtras) / rows
+      );
     } else {
-      const cellFor = (label) =>
-        Math.max(6, (width - label - gap * (currentRange.columns - 1)) / currentRange.columns);
-      cell = cellFor(labelWidth);
-      if (state.settings.gridShowWeekdays) {
-        labelWidth = Math.max(30, Math.min(54, cell * 3));
-      }
-      cell = cellFor(labelWidth);
-      monthHeight = state.settings.gridShowMonths
-        ? Math.max(18, Math.min(28, cell * 1.25))
+      labelWidth = state.settings.gridShowWeekdays
+        ? clamp(26, width * 0.045, 54)
         : 0;
+
+      monthHeight = state.settings.gridShowMonths
+        ? clamp(14, height * 0.12, 28)
+        : 0;
+
+      cellWidth = Math.max(
+        3,
+        (
+          width -
+          labelWidth -
+          gap * (columns - 1)
+        ) / columns
+      );
+
+      const verticalExtras =
+        monthHeight +
+        (monthHeight > 0 ? gap : 0) +
+        gap * (rows - 1);
+
+      cellHeight = Math.max(
+        3,
+        (height - verticalExtras) / rows
+      );
     }
 
-    const gridWidth = cell * currentRange.columns + gap * (currentRange.columns - 1);
-    const gridHeight = cell * currentRange.rows + gap * (currentRange.rows - 1);
-    const labelGap = weekdayHeight > 0 ? gap : 0;
+    const gridWidth =
+      cellWidth * columns +
+      gap * (columns - 1);
+
+    const gridHeight =
+      cellHeight * rows +
+      gap * (rows - 1);
+
     const monthGap = monthHeight > 0 ? gap : 0;
-    const totalWidth = labelWidth + gridWidth;
-    const totalHeight = monthHeight + monthGap + weekdayHeight + labelGap + gridHeight;
+    const weekdayGap = weekdayHeight > 0 ? gap : 0;
+
+    const totalWidth =
+      labelWidth +
+      gridWidth;
+
+    const totalHeight =
+      monthHeight +
+      monthGap +
+      weekdayHeight +
+      weekdayGap +
+      gridHeight;
+
+    const visualCell = Math.min(cellWidth, cellHeight);
     const style = elements.fittedGrid.style;
-    style.setProperty('--columns', String(currentRange.columns));
-    style.setProperty('--rows', String(currentRange.rows));
-    style.setProperty('--cell', `${cell}px`);
+
+    style.setProperty('--columns', String(columns));
+    style.setProperty('--rows', String(rows));
+
+    style.setProperty(
+      '--cell-width',
+      `${cellWidth}px`
+    );
+
+    style.setProperty(
+      '--cell-height',
+      `${cellHeight}px`
+    );
+
+    /*
+     * Used for font size, radius and indicators.
+     */
+    style.setProperty(
+      '--cell',
+      `${visualCell}px`
+    );
+
     style.setProperty('--gap', `${gap}px`);
     style.setProperty('--label-width', `${labelWidth}px`);
     style.setProperty('--month-height', `${monthHeight}px`);
     style.setProperty('--weekday-height', `${weekdayHeight}px`);
     style.setProperty('--grid-width', `${gridWidth}px`);
     style.setProperty('--grid-height', `${gridHeight}px`);
+
     style.width = `${totalWidth}px`;
     style.height = `${totalHeight}px`;
-    elements.gridViewport.style.height = `${totalHeight}px`;
 
-    const headerHeight = state.settings.gridShowHeader
-      ? Math.max(30, elements.widgetHeader.offsetHeight || 0) + 6
-      : 0;
-    const legendHeight = state.settings.gridShowLegend
-      ? Math.max(28, elements.widgetLegend.offsetHeight || 0)
-      : 0;
-    const preferredHeight = Math.ceil(
-      verticalPadding + borderHeight + headerHeight + totalHeight + legendHeight
-    );
-    api.fitWidget?.('grid', preferredHeight);
+    /*
+     * Never call api.fitWidget() here.
+     * It would overwrite the height selected by the user.
+     */
+    elements.gridViewport.style.removeProperty('height');
   }
 
   function handleResize() {
     window.cancelAnimationFrame(resizeFrame);
+
     resizeFrame = window.requestAnimationFrame(() => {
       if (!state || !currentRange) return;
-      const nextSpan = state.settings.gridView === 'year' ? adaptiveMonthSpan() : currentRange.monthSpan;
-      if (state.settings.gridView === 'year' && nextSpan !== currentRange.monthSpan) render();
-      else fitGrid();
+
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+
+      const widthChanged =
+        Math.abs(nextWidth - lastWindowWidth) > 2;
+
+      const heightChanged =
+        Math.abs(nextHeight - lastWindowHeight) > 2;
+
+      lastWindowWidth = nextWidth;
+      lastWindowHeight = nextHeight;
+
+      /*
+       * Width-only resize:
+       * update responsive month count.
+       *
+       * Height or corner resize:
+       * retain the current month count and scale it.
+       */
+      if (
+        state.settings.gridView === 'year' &&
+        widthChanged &&
+        !heightChanged
+      ) {
+        const nextSpan = adaptiveMonthSpan();
+
+        lockedYearMonthSpan = nextSpan;
+
+        if (nextSpan !== currentRange.monthSpan) {
+          render();
+          return;
+        }
+      }
+
+      fitGrid();
     });
   }
 

@@ -196,7 +196,6 @@ test('grid widget fits the complete year at a wide width without scrolling', asy
   assert.equal(document.getElementById('widget-legend').classList.contains('hidden'), true);
   assert.ok(Number.parseFloat(document.getElementById('fitted-grid').style.getPropertyValue('--cell')) > 0);
   assert.match(document.getElementById('fitted-grid').style.width, /px$/);
-  assert.ok(app.calls.fitWidgets.some(({ type, height }) => type === 'grid' && height > 150));
   assert.equal(app.errors.length, 0);
 
   click(window, document.querySelector('.day-cell.today'));
