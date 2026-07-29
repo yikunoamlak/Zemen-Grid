@@ -72,65 +72,45 @@ summary:focus-visible {
   padding: 27px 24px 34px;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  gap: 12px;
+}
+
+.title-logo {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+}
+
+.title-tag {
+  color: var(--muted);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
 .control-hero {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
   margin-bottom: 25px;
-  gap: 14px;
 }
 
-.brand-icon {
-  display: grid;
-  align-self: start;
-  grid-template-columns: repeat(2, 12px);
-  grid-template-rows: repeat(2, 12px);
-  margin-top: 4px;
-  gap: 3px;
-}
-
-.brand-icon span {
-  border-radius: 3px;
-  background: var(--accent);
-}
-
-.brand-icon span:nth-child(2) {
-  opacity: 0.72;
-}
-
-.brand-icon span:nth-child(3) {
-  opacity: 0.44;
-}
-
-.brand-icon span:nth-child(4) {
-  opacity: 0.22;
-}
-
-.eyebrow {
-  margin: 0 0 5px;
-  color: var(--subtle);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
+.hero-copy {
+  max-width: 500px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 h1,
 h2,
 p {
   margin-top: 0;
-}
-
-h1 {
-  margin-bottom: 5px;
-  font-size: 32px;
-  letter-spacing: -0.045em;
-}
-
-.hero-copy {
-  max-width: 500px;
-  margin-bottom: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
 }
 
 .widget-list,
@@ -641,41 +621,11 @@ body {
 }
 
 .control-hero {
-  grid-template-columns: 40px minmax(0, 1fr);
   margin-bottom: 20px;
-  gap: 12px;
 }
 
-.brand-icon {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  margin-top: 2px;
-  place-items: center;
-
-  border: 1px solid var(--border);
-  border-radius: var(--win-radius-window);
-
-  color: var(--accent);
-  background: var(--panel-strong);
-
-  box-shadow:
-    0 2px 8px rgb(0 0 0 / 20%);
-}
-
-.brand-icon svg {
-  width: 21px;
-  height: 21px;
-
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.4;
-}
-
-h1 {
-  margin-bottom: 2px;
+.title-row {
+  margin-bottom: 6px;
 
   font-family:
     "Segoe UI Variable Display",
@@ -684,23 +634,30 @@ h1 {
 
   font-size: 28px;
   font-weight: 600;
-  line-height: 36px;
-  letter-spacing: 0;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  gap: 10px;
 }
 
-.eyebrow {
-  margin-bottom: 0;
+.title-logo {
+  width: 36px;
+  height: 36px;
+
+  color: var(--accent);
+}
+
+.title-tag {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: -0.01em;
 
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0;
 }
 
 .hero-copy {
   max-width: 560px;
-  margin-bottom: 0;
+  margin: 0;
 
   color: var(--muted);
   font-size: 14px;

@@ -166,7 +166,7 @@
     const timeWidth = Math.max(150, width - dateAllowance - daypartAllowance - 24);
     const size = Math.max(38, Math.min(82, timeWidth / (characterCount * 0.52)));
     document.documentElement.style.setProperty('--clock-size', `${size}px`);
-    document.documentElement.style.setProperty('--clock-meta-size', `${Math.max(12, Math.min(17, size * 0.24))}px`);
+    document.documentElement.style.setProperty('--clock-date-size', `${Math.max(13, Math.min(22, size * 0.28))}px`);
     const headerHeight = state.settings.clockShowHeader
       ? Math.max(24, elements.clockHeader.offsetHeight || 0) + 4
       : 0;
