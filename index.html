@@ -18,7 +18,7 @@
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
         </div>
         <div>
-          <p class="eyebrow">ETHIOPIAN TIME AT A GLANCE</p>
+          <p class="eyebrow">Ethiopian time at a glance</p>
           <h1>Zemen Grid</h1>
           <p class="hero-copy">Control the two floating widgets. Right-click either widget for quick options.</p>
         </div>
@@ -51,7 +51,9 @@
           </div>
           <div class="widget-card-copy">
             <strong>Ethiopian clock</strong>
-            <small>Addis Ababa time · ቀን / ሌሊት</small>
+            <small>
+              Addis Ababa time · ጧት / ከሰአት / ምሽት / ሌሊት
+            </small>
           </div>
           <button class="subtle-button" id="show-clock" type="button">Show</button>
           <label class="switch" title="Show clock widget">
@@ -147,7 +149,11 @@
             <span><strong>Hover details</strong><small>Reveal year progress when hovering</small></span>
             <input id="grid-hover-details" type="checkbox">
           </label>
-          <p class="details-tip">Resize the width to move smoothly between the current month, 3 months, 6 months, and the full Ethiopian year. Height follows the content automatically.</p>
+          <p class="details-tip">
+            Resize the width to switch between 1, 3, 6, and
+            13 months. Resize the height or a corner to scale
+            the current layout.
+          </p>
         </div>
       </details>
 
@@ -162,8 +168,13 @@
         <div class="details-body">
           <div class="fixed-clock-format">
             <span class="format-example">8:16:53</span>
-            <span class="daypart-example">ቀን</span>
-            <small>Addis Ababa 14:16 is shown as 8:16 ቀን in Ethiopian clock time.</small>
+            <span class="daypart-example" lang="am">
+              ከሰአት
+            </span>
+            <small>
+              Addis Ababa 14:16 is shown as
+              8:16 ከሰአት in Ethiopian clock time.
+            </small>
           </div>
           <label class="check-row">
             <span><strong>Ethiopian date</strong><small>Show inline beside the time</small></span>

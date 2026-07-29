@@ -790,3 +790,137 @@ body[data-theme="light"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Windows 11 widget alignment */
+:root {
+  --win-radius-window: 8px;
+  --win-radius-control: 4px;
+  --win-radius-overlay: 8px;
+
+  --win-motion-fast: 83ms;
+  --win-motion-standard: 167ms;
+  --win-motion-ease:
+    cubic-bezier(0.55, 0.55, 0, 1);
+
+  font-family:
+    "Segoe UI Variable Text",
+    "Ebrima",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+}
+
+.widget-shell {
+  border-radius: var(--win-radius-window);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--surface) 97%,
+      var(--accent) 3%
+    );
+
+  box-shadow:
+    0 16px 32px rgb(0 0 0 / 22%),
+    0 2px 8px rgb(0 0 0 / 18%),
+    inset 0 0 0 1px rgb(255 255 255 / 3%);
+
+  /*
+   * The persistent widget surface should resemble
+   * Mica, not a permanently blurred Acrylic panel.
+   */
+  backdrop-filter: none;
+}
+
+.widget-nav,
+.widget-menu-button {
+  border-radius: var(--win-radius-control);
+
+  transition:
+    color var(--win-motion-fast) linear,
+    background-color var(--win-motion-fast) linear,
+    border-color var(--win-motion-fast) linear,
+    transform var(--win-motion-standard)
+      var(--win-motion-ease);
+}
+
+.widget-nav:active,
+.widget-menu-button:active {
+  transform: translateY(1px);
+}
+
+.day-cell,
+.legend-cell {
+  border-radius: var(--win-radius-control);
+}
+
+.widget-header strong,
+.clock-header {
+  font-weight: 600;
+}
+
+#clock-time {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.daypart,
+.clock-date {
+  font-family:
+    "Ebrima",
+    "Noto Sans Ethiopic",
+    "Nyala",
+    "Segoe UI",
+    sans-serif;
+}
+
+.daypart {
+  font-weight: 600;
+}
+
+.clock-date {
+  font-weight: 400;
+}
+
+.clock-line {
+  gap: clamp(8px, 2vw, 14px);
+}
+
+.hover-summary,
+.clock-hover-details,
+.day-tooltip {
+  border-radius: var(--win-radius-overlay);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--surface-elevated) 84%,
+      transparent
+    );
+
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 26%);
+
+  /*
+   * Acrylic-like treatment is appropriate here
+   * because these are temporary overlay surfaces.
+   */
+  backdrop-filter:
+    blur(20px)
+    saturate(120%);
+
+  transition:
+    opacity var(--win-motion-standard)
+      var(--win-motion-ease),
+    transform var(--win-motion-standard)
+      var(--win-motion-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

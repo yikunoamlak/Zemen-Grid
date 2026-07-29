@@ -246,6 +246,13 @@ function createControllerWindow() {
     show: false,
     autoHideMenuBar: true,
     backgroundColor: '#202020',
+
+    ...(process.platform === 'win32'
+      ? {
+          backgroundMaterial: 'mica'
+        }
+      : {}),
+
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
     webPreferences: secureWebPreferences()
   });

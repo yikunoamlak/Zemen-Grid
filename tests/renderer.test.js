@@ -261,7 +261,15 @@ test('clock widget uses Addis Ababa Ethiopian clock time and an inline date', as
   );
   const expectedHour = ((addisParts.hour + 5) % 12) + 1;
   const displayedHour = Number(document.getElementById('clock-time').textContent.split(':')[0]);
-  const expectedDaypart = addisParts.hour >= 6 && addisParts.hour < 18 ? 'ቀን' : 'ሌሊት';
+  const { hour } = addisParts;
+  const expectedDaypart =
+    hour >= 6 && hour < 12
+      ? 'ጧት'
+      : hour >= 12 && hour < 18
+        ? 'ከሰአት'
+        : hour >= 18
+          ? 'ምሽት'
+          : 'ሌሊት';
 
   assert.match(document.getElementById('clock-time').textContent, /^(?:[1-9]|1[0-2]):\d{2}:\d{2}$/);
   assert.equal(displayedHour, expectedHour);

@@ -63,17 +63,56 @@
     return new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
   }
 
+  function daypartForHour(hour24) {
+    if (hour24 >= 6 && hour24 < 12) {
+      return {
+        label: 'ጧት',
+        range: '06:00–11:59'
+      };
+    }
+
+    if (hour24 >= 12 && hour24 < 18) {
+      return {
+        label: 'ከሰአት',
+        range: '12:00–17:59'
+      };
+    }
+
+    if (hour24 >= 18) {
+      return {
+        label: 'ምሽት',
+        range: '18:00–23:59'
+      };
+    }
+
+    return {
+      label: 'ሌሊት',
+      range: '00:00–05:59'
+    };
+  }
+
   function timeParts(now) {
     const parts = ethiopiaCivilParts(now);
     const hour24 = parts.hour;
+
+    /*
+     * Ethiopian clock:
+     * 06:00 civil time = 12:00 Ethiopian time
+     * 12:00 civil time = 6:00 Ethiopian time
+     */
     const ethiopianHour = ((hour24 + 5) % 12) + 1;
+
     const minutes = String(parts.minute).padStart(2, '0');
     const seconds = String(parts.second).padStart(2, '0');
+    const daypart = daypartForHour(hour24);
+
     return {
       text: state.settings.clockShowSeconds
         ? `${ethiopianHour}:${minutes}:${seconds}`
         : `${ethiopianHour}:${minutes}`,
-      daypart: hour24 >= 6 && hour24 < 18 ? 'ቀን' : 'ሌሊት'
+
+      daypart: daypart.label,
+      daypartRange: daypart.range
     };
   }
 
@@ -86,6 +125,13 @@
     elements.clockTime.textContent = time.text;
     elements.clockTime.dateTime = now.toISOString();
     elements.clockDaypart.textContent = time.daypart;
+    elements.clockDaypart.title =
+      `${time.daypart} · ${time.daypartRange}`;
+
+    elements.clockDaypart.setAttribute(
+      'aria-label',
+      `${time.daypart}, ${time.daypartRange}`
+    );
     elements.clockDate.textContent = Calendar.formatEthiopianShort(ethiopianDate, state.settings.language);
     elements.timezoneLabel.textContent = 'Africa/Addis_Ababa · UTC+3';
     elements.clockYearProgress.textContent = `Day ${progress.dayNumber} of ${progress.totalDays} · ${progress.daysLeft} days left`;
@@ -113,7 +159,10 @@
       Math.max(260, (elements.widgetShell.clientWidth || window.innerWidth || 520) - horizontalPadding);
     const characterCount = elements.clockTime.textContent.length;
     const dateAllowance = state.settings.clockShowDate ? Math.min(210, width * 0.38) : 0;
-    const daypartAllowance = 54;
+    const daypartAllowance = Math.max(
+      48,
+      Math.ceil(elements.clockDaypart.scrollWidth || 0) + 4
+    );
     const timeWidth = Math.max(150, width - dateAllowance - daypartAllowance - 24);
     const size = Math.max(38, Math.min(82, timeWidth / (characterCount * 0.52)));
     document.documentElement.style.setProperty('--clock-size', `${size}px`);
