@@ -10,7 +10,9 @@
     "check": "node --check electron/main.js && node --check electron/preload.js && node --check src/calendar.js && node --check src/controller.js && node --check src/grid-widget.js && node --check src/clock-widget.js && node --check src/note.js",
     "test": "node --test tests/calendar.test.js tests/renderer.test.js",
     "verify": "npm run check && npm test",
-    "build:windows": "electron-builder --win portable --x64",
+    "build:windows": "electron-builder --win nsis --x64",
+    "build:portable": "electron-builder --win portable --x64",
+    "publish:windows": "electron-builder --win nsis --x64 --publish always",
     "build:linux": "electron-builder --linux AppImage --x64"
   },
   "devDependencies": {
@@ -41,14 +43,28 @@
     "win": {
       "target": [
         {
-          "target": "portable",
+          "target": "nsis",
           "arch": [
             "x64"
           ]
         }
       ],
-      "artifactName": "Zemen-Grid-${version}-${arch}.${ext}",
+      "artifactName": "Zemen-Grid-${version}-Setup-${arch}.${ext}",
       "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "yikunoamlak",
+      "repo": "zemen-grid",
+      "releaseType": "release"
     },
     "linux": {
       "target": [
@@ -58,5 +74,8 @@
       "icon": "assets/icon.png",
       "category": "Utility"
     }
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
   }
 }

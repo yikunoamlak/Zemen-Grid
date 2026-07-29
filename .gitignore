@@ -30,3 +30,6 @@ electron-builder.yml
 
 # Artifacts
 artifacts/
+
+# Code signing certificate (local)
+cert.pfx

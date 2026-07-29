@@ -3,12 +3,14 @@ const path = require('node:path');
 const {
   app,
   BrowserWindow,
+  dialog,
   ipcMain,
   Menu,
   nativeImage,
   screen,
   Tray
 } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 app.setName('Zemen Grid');
 app.setAppUserModelId('com.zemengrid.desktop');
@@ -55,6 +57,9 @@ let statePath = '';
 let tray = null;
 let saveTimer = null;
 let isQuitting = false;
+let updateCheckTimer = null;
+let manualUpdateCheck = false;
+let updatePromptOpen = false;
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -548,6 +553,8 @@ function refreshTrayMenu() {
         click: (item) => patchSettings({ alwaysOnTop: item.checked })
       },
       { type: 'separator' },
+      { label: 'Check for updates', click: () => checkForUpdates(true) },
+      { type: 'separator' },
       { label: 'Quit', click: () => app.quit() }
     ])
   );
@@ -561,6 +568,89 @@ function createTray() {
   tray.setToolTip('Zemen Grid');
   tray.on('click', showController);
   refreshTrayMenu();
+}
+
+function updaterLog(message) {
+  console.log(`[auto-updater] ${message}`);
+}
+
+function getUpdateParentWindow() {
+  return windows.controller || BrowserWindow.getAllWindows()[0] || null;
+}
+
+function showUpdateMessage(title, message) {
+  if (updatePromptOpen) return;
+  updatePromptOpen = true;
+  const parent = getUpdateParentWindow();
+  dialog.showMessageBox(parent, {
+    type: 'info',
+    buttons: ['OK'],
+    title,
+    message
+  }).finally(() => { updatePromptOpen = false; });
+}
+
+function checkForUpdates(manual = false) {
+  manualUpdateCheck = manual;
+  autoUpdater.checkForUpdates().catch(err => {
+    updaterLog(`check error: ${err.message}`);
+    if (manual) showUpdateMessage('Update Check', `Could not check for updates:\n${err.message}`);
+  });
+}
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.allowPrerelease = false;
+  autoUpdater.logger = {
+    info: (msg) => updaterLog(`info: ${msg}`),
+    warn: (msg) => updaterLog(`warn: ${msg}`),
+    error: (msg) => updaterLog(`error: ${msg}`)
+  };
+
+  autoUpdater.on('checking-for-update', () => updaterLog('checking for update...'));
+  autoUpdater.on('update-available', (info) => {
+    updaterLog(`update available: ${info.version}`);
+    if (manualUpdateCheck) {
+      showUpdateMessage('Update Available', `Version ${info.version} is downloading and will install on quit.`);
+    }
+  });
+  autoUpdater.on('update-not-available', (info) => {
+    updaterLog(`update not available (latest: ${info.version})`);
+    if (manualUpdateCheck) {
+      showUpdateMessage('No Update', `You are up to date (${app.getVersion()}).`);
+    }
+  });
+  autoUpdater.on('error', (err) => {
+    updaterLog(`error: ${err.message}`);
+    if (manualUpdateCheck) {
+      showUpdateMessage('Update Error', `Update error:\n${err.message}`);
+    }
+  });
+  autoUpdater.on('download-progress', (progress) => {
+    updaterLog(`download progress: ${progress.percent.toFixed(1)}%`);
+  });
+  autoUpdater.on('update-downloaded', (info) => {
+    updaterLog(`update downloaded: ${info.version}`);
+    const parent = getUpdateParentWindow();
+    if (updatePromptOpen) return;
+    updatePromptOpen = true;
+    dialog.showMessageBox(parent, {
+      type: 'info',
+      buttons: ['Restart now', 'Later'],
+      defaultId: 0,
+      cancelId: 1,
+      title: 'Update Ready',
+      message: `Version ${info.version} has been downloaded. Restart to apply the update?`
+    }).then(({ response }) => {
+      updatePromptOpen = false;
+      if (response === 0) {
+        autoUpdater.quitAndInstall(false, true);
+      }
+    }).catch(() => { updatePromptOpen = false; });
+  });
+
+  setTimeout(() => checkForUpdates(), 10000);
+  updateCheckTimer = setInterval(() => checkForUpdates(), 6 * 60 * 60 * 1000);
 }
 
 function registerIpc() {
@@ -636,6 +726,7 @@ app.whenReady().then(() => {
   applyWindowSettings();
   applyWidgetVisibility();
   if (state.settings.controllerOnLaunch) showController();
+  setupAutoUpdater();
 });
 
 app.on('activate', showController);
@@ -643,6 +734,7 @@ app.on('activate', showController);
 app.on('before-quit', () => {
   isQuitting = true;
   writeState();
+  if (updateCheckTimer) clearInterval(updateCheckTimer);
 });
 
 app.on('window-all-closed', () => {
