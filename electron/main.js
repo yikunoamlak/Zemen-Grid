@@ -182,20 +182,20 @@ function isUsableBounds(bounds) {
 function defaultBounds(type) {
   const area = screen.getPrimaryDisplay().workArea;
   if (type === 'grid') {
-    const width = Math.min(1240, Math.max(820, area.width - 48));
+    const width = Math.min(1260, Math.max(360, area.width - 48));
     return {
       width,
-      height: 232,
+      height: 220,
       x: area.x + area.width - width - 24,
-      y: area.y + area.height - 256
+      y: area.y + area.height - 244
     };
   }
   if (type === 'clock') {
     return {
-      width: 440,
-      height: 154,
-      x: area.x + area.width - 464,
-      y: area.y + area.height - 434
+      width: 560,
+      height: 108,
+      x: area.x + area.width - 584,
+      y: area.y + area.height - 356
     };
   }
   return {
@@ -245,7 +245,7 @@ function createControllerWindow() {
     title: 'Zemen Grid Controls',
     show: false,
     autoHideMenuBar: true,
-    backgroundColor: '#0d1117',
+    backgroundColor: '#202020',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
     webPreferences: secureWebPreferences()
   });
@@ -271,10 +271,10 @@ function createWidgetWindow(type) {
   const bounds = resolvedBounds(type);
   const win = new BrowserWindow({
     ...bounds,
-    minWidth: isGrid ? 680 : 320,
-    minHeight: isGrid ? 126 : 108,
+    minWidth: isGrid ? 320 : 300,
+    minHeight: isGrid ? 104 : 80,
     maxWidth: 2600,
-    maxHeight: isGrid ? 700 : 360,
+    maxHeight: isGrid ? 1500 : 240,
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
@@ -311,14 +311,13 @@ function fitWidgetWindow(event, type, requestedHeight) {
   if (!['grid', 'clock'].includes(type)) return null;
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win || win !== windows[type] || win.isDestroyed()) return null;
-  const minimum = type === 'grid' ? 126 : 108;
-  const maximum = type === 'grid' ? 520 : 280;
-  const height = Math.round(Math.max(minimum, Math.min(maximum, Number(requestedHeight) || minimum)));
+  const minimum = type === 'grid' ? 104 : 80;
   const bounds = win.getBounds();
-  if (Math.abs(bounds.height - height) <= 2) return bounds;
-
   const display = screen.getDisplayMatching(bounds);
   const area = display.workArea;
+  const maximum = Math.min(type === 'grid' ? 1500 : 240, Math.max(minimum, area.height - 16));
+  const height = Math.round(Math.max(minimum, Math.min(maximum, Number(requestedHeight) || minimum)));
+  if (Math.abs(bounds.height - height) <= 2) return bounds;
   const next = { ...bounds, height };
   if (next.y + height > area.y + area.height) {
     next.y = Math.max(area.y, area.y + area.height - height);
@@ -350,7 +349,7 @@ function openNoteWindow(iso) {
     show: false,
     autoHideMenuBar: true,
     alwaysOnTop: state.settings.alwaysOnTop,
-    backgroundColor: '#0d1117',
+    backgroundColor: '#202020',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
     webPreferences: secureWebPreferences()
   });

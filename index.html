@@ -15,7 +15,7 @@
     <main class="control-shell">
       <header class="control-hero">
         <div class="brand-icon" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
         </div>
         <div>
           <p class="eyebrow">ETHIOPIAN TIME AT A GLANCE</p>
@@ -32,12 +32,11 @@
 
         <article class="widget-card">
           <div class="widget-card-icon grid-icon" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2"/><path d="M3.5 9h17M8 3v3M16 3v3M8 12h2M12 12h2M16 12h2M8 16h2M12 16h2M16 16h2"/></svg>
           </div>
           <div class="widget-card-copy">
-            <strong>Year grid</strong>
-            <small>Scalable heatmap · no scrolling</small>
+            <strong>Responsive calendar</strong>
+            <small>1, 3, 6, or 13 months as you resize</small>
           </div>
           <button class="subtle-button" id="show-grid" type="button">Show</button>
           <label class="switch" title="Show grid widget">
@@ -47,10 +46,12 @@
         </article>
 
         <article class="widget-card">
-          <div class="widget-card-icon clock-icon" aria-hidden="true">1:24</div>
+          <div class="widget-card-icon clock-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          </div>
           <div class="widget-card-copy">
-            <strong>Local clock</strong>
-            <small>12-hour time · ቀን / ምሽት</small>
+            <strong>Ethiopian clock</strong>
+            <small>Addis Ababa time · ቀን / ሌሊት</small>
           </div>
           <button class="subtle-button" id="show-clock" type="button">Show</button>
           <label class="switch" title="Show clock widget">
@@ -146,7 +147,7 @@
             <span><strong>Hover details</strong><small>Reveal year progress when hovering</small></span>
             <input id="grid-hover-details" type="checkbox">
           </label>
-          <p class="details-tip">Resize the width to choose the scale; height fits automatically. Drag from the padding or labels, click a cell for notes, and right-click for quick settings.</p>
+          <p class="details-tip">Resize the width to move smoothly between the current month, 3 months, 6 months, and the full Ethiopian year. Height follows the content automatically.</p>
         </div>
       </details>
 
@@ -154,18 +155,18 @@
         <summary>
           <span>
             <strong>Clock widget</strong>
-            <small>12-hour local time with an explicit day/night word</small>
+            <small>Ethiopian clock time with an inline date</small>
           </span>
           <span class="chevron" aria-hidden="true">⌄</span>
         </summary>
         <div class="details-body">
           <div class="fixed-clock-format">
-            <span class="format-example">1:16:53</span>
+            <span class="format-example">8:16:53</span>
             <span class="daypart-example">ቀን</span>
-            <small>06:00–17:59 is ቀን; all other hours are ምሽት.</small>
+            <small>Addis Ababa 14:16 is shown as 8:16 ቀን in Ethiopian clock time.</small>
           </div>
           <label class="check-row">
-            <span><strong>Ethiopian date</strong><small>Show below the time</small></span>
+            <span><strong>Ethiopian date</strong><small>Show inline beside the time</small></span>
             <input id="clock-show-date" type="checkbox">
           </label>
           <label class="check-row">

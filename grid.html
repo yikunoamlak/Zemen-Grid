@@ -14,15 +14,21 @@
   <body class="grid-widget" data-theme="dark">
     <main class="widget-shell" id="widget-shell">
       <header class="widget-header hidden" id="widget-header">
-        <button class="widget-nav no-drag" id="previous-range" type="button" aria-label="Previous period">‹</button>
+        <button class="widget-nav no-drag" id="previous-range" type="button" aria-label="Previous period">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg>
+        </button>
         <strong id="range-title">— ዓ.ም.</strong>
         <span id="header-days-left">— days left</span>
-        <button class="widget-nav no-drag" id="next-range" type="button" aria-label="Next period">›</button>
-        <button class="widget-menu-button no-drag" id="open-controls" type="button" aria-label="Open controls" title="Open controls">•••</button>
+        <button class="widget-nav no-drag" id="next-range" type="button" aria-label="Next period">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5"/></svg>
+        </button>
+        <button class="widget-menu-button no-drag" id="open-controls" type="button" aria-label="Open controls" title="Open controls">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.8 2.8h2.4l.5 1.7c.5.2 1 .4 1.4.8l1.6-.7 1.7 1.7-.7 1.6c.4.4.6.9.8 1.4l1.7.5v2.4l-1.7.5c-.2.5-.4 1-.8 1.4l.7 1.6-1.7 1.7-1.6-.7c-.4.4-.9.6-1.4.8l-.5 1.7H8.8l-.5-1.7c-.5-.2-1-.4-1.4-.8l-1.6.7-1.7-1.7.7-1.6c-.4-.4-.6-.9-.8-1.4l-1.7-.5V9.8l1.7-.5c.2-.5.4-1 .8-1.4l-.7-1.6 1.7-1.7 1.6.7c.4-.4.9-.6 1.4-.8l.5-1.7Z"/><circle cx="10" cy="11" r="2.6"/></svg>
+        </button>
       </header>
 
-      <section class="grid-viewport" id="grid-viewport" aria-label="Ethiopian calendar heatmap">
-        <div class="fitted-grid" id="fitted-grid">
+      <section class="grid-viewport" id="grid-viewport" aria-label="Ethiopian calendar grid">
+        <div class="fitted-grid timeline-layout" id="fitted-grid">
           <div class="month-label-row" id="month-labels" aria-hidden="true"></div>
           <div class="heatmap-row">
             <div class="weekday-labels" id="weekday-labels" aria-hidden="true"></div>

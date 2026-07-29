@@ -37,16 +37,43 @@
     elements.widgetShell.classList.toggle('show-hover-details', state.settings.clockHoverDetails);
   }
 
+  const ethiopiaDateTimeFormatter = new Intl.DateTimeFormat('en-US-u-ca-gregory-nu-latn', {
+    timeZone: 'Africa/Addis_Ababa',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23'
+  });
+
+  function ethiopiaCivilParts(now) {
+    const values = {};
+    for (const part of ethiopiaDateTimeFormatter.formatToParts(now)) {
+      if (['year', 'month', 'day', 'hour', 'minute', 'second'].includes(part.type)) {
+        values[part.type] = Number(part.value);
+      }
+    }
+    return values;
+  }
+
+  function ethiopiaCalendarDate(now) {
+    const parts = ethiopiaCivilParts(now);
+    return new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  }
+
   function timeParts(now) {
-    const hour24 = now.getHours();
-    const hour12 = hour24 % 12 || 12;
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const parts = ethiopiaCivilParts(now);
+    const hour24 = parts.hour;
+    const ethiopianHour = ((hour24 + 5) % 12) + 1;
+    const minutes = String(parts.minute).padStart(2, '0');
+    const seconds = String(parts.second).padStart(2, '0');
     return {
       text: state.settings.clockShowSeconds
-        ? `${hour12}:${minutes}:${seconds}`
-        : `${hour12}:${minutes}`,
-      daypart: hour24 >= 6 && hour24 < 18 ? 'ቀን' : 'ምሽት'
+        ? `${ethiopianHour}:${minutes}:${seconds}`
+        : `${ethiopianHour}:${minutes}`,
+      daypart: hour24 >= 6 && hour24 < 18 ? 'ቀን' : 'ሌሊት'
     };
   }
 
@@ -54,13 +81,13 @@
     if (!state) return;
     const now = new Date();
     const time = timeParts(now);
-    const progress = Calendar.getYearProgress(now);
+    const ethiopianDate = ethiopiaCalendarDate(now);
+    const progress = Calendar.getYearProgress(ethiopianDate);
     elements.clockTime.textContent = time.text;
     elements.clockTime.dateTime = now.toISOString();
     elements.clockDaypart.textContent = time.daypart;
-    elements.clockDate.textContent = Calendar.formatEthiopian(now, state.settings.language);
-    elements.timezoneLabel.textContent =
-      Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local timezone';
+    elements.clockDate.textContent = Calendar.formatEthiopianShort(ethiopianDate, state.settings.language);
+    elements.timezoneLabel.textContent = 'Africa/Addis_Ababa · UTC+3';
     elements.clockYearProgress.textContent = `Day ${progress.dayNumber} of ${progress.totalDays} · ${progress.daysLeft} days left`;
     fitClock();
   }
@@ -73,31 +100,29 @@
       return Number.isFinite(parsed) ? parsed : fallback;
     };
     const horizontalPadding =
-      pixel(shellStyle.paddingLeft, 14) +
-      pixel(shellStyle.paddingRight, 14);
+      pixel(shellStyle.paddingLeft, 12) +
+      pixel(shellStyle.paddingRight, 12);
     const verticalPadding =
-      pixel(shellStyle.paddingTop, 14) +
-      pixel(shellStyle.paddingBottom, 14);
+      pixel(shellStyle.paddingTop, 10) +
+      pixel(shellStyle.paddingBottom, 10);
     const borderHeight =
       pixel(shellStyle.borderTopWidth, 1) +
       pixel(shellStyle.borderBottomWidth, 1);
     const width =
       elements.clockContent.clientWidth ||
-      Math.max(280, (elements.widgetShell.clientWidth || 420) - horizontalPadding);
-    const textLength = Math.max(5, elements.clockTime.textContent.length);
-    const size = Math.max(44, Math.min(96, (width - 74) / (textLength * 0.56)));
+      Math.max(260, (elements.widgetShell.clientWidth || window.innerWidth || 520) - horizontalPadding);
+    const characterCount = elements.clockTime.textContent.length;
+    const dateAllowance = state.settings.clockShowDate ? Math.min(210, width * 0.38) : 0;
+    const daypartAllowance = 54;
+    const timeWidth = Math.max(150, width - dateAllowance - daypartAllowance - 24);
+    const size = Math.max(38, Math.min(82, timeWidth / (characterCount * 0.52)));
     document.documentElement.style.setProperty('--clock-size', `${size}px`);
+    document.documentElement.style.setProperty('--clock-meta-size', `${Math.max(12, Math.min(17, size * 0.24))}px`);
     const headerHeight = state.settings.clockShowHeader
-      ? Math.max(24, elements.clockHeader.offsetHeight || 0) + 5
+      ? Math.max(24, elements.clockHeader.offsetHeight || 0) + 4
       : 0;
-    const dateHeight = state.settings.clockShowDate ? Math.max(24, size * 0.29) : 0;
-    const contentHeight = size * 1.02 + dateHeight;
-    const preferredHeight = Math.ceil(
-      Math.max(
-        state.settings.clockShowDate ? 150 : 116,
-        verticalPadding + borderHeight + headerHeight + contentHeight
-      )
-    );
+    const contentHeight = Math.max(44, size * 1.06);
+    const preferredHeight = Math.ceil(verticalPadding + borderHeight + headerHeight + contentHeight);
     api.fitWidget?.('clock', preferredHeight);
   }
 

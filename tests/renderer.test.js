@@ -67,6 +67,7 @@ async function buildPage({ htmlFile, scriptFile, state = defaultState(), query =
     pretendToBeVisual: true
   });
   const { window } = dom;
+  Object.defineProperty(window, 'innerWidth', { value: 1260, writable: true });
 
   window.console.error = (...values) => errors.push(values.join(' '));
   window.matchMedia = () => ({
@@ -181,7 +182,7 @@ test('controller manages independent widgets and appearance', async () => {
   app.dom.window.close();
 });
 
-test('grid widget fits the complete year without a scrolling container', async () => {
+test('grid widget fits the complete year at a wide width without scrolling', async () => {
   const app = await buildPage({ htmlFile: 'grid.html', scriptFile: 'src/grid-widget.js' });
   const { document, window } = app;
   const Calendar = window.ZemenCalendar;
@@ -204,13 +205,71 @@ test('grid widget fits the complete year without a scrolling container', async (
   app.dom.window.close();
 });
 
-test('clock widget is 12-hour and labels day versus night in Amharic', async () => {
+
+test('year timeline reveals 1, 3, 6, and all 13 months as width grows', async () => {
+  const app = await buildPage({ htmlFile: 'grid.html', scriptFile: 'src/grid-widget.js' });
+  const { document, window } = app;
+
+  async function resizeTo(width) {
+    window.innerWidth = width;
+    window.dispatchEvent(new window.Event('resize'));
+    await tick();
+    await tick();
+  }
+
+  await resizeTo(400);
+  assert.equal(document.querySelectorAll('.month-label').length, 1);
+
+  await resizeTo(650);
+  assert.equal(document.querySelectorAll('.month-label').length, 3);
+
+  await resizeTo(900);
+  assert.equal(document.querySelectorAll('.month-label').length, 6);
+
+  await resizeTo(1300);
+  assert.equal(document.querySelectorAll('.month-label').length, 13);
+  app.dom.window.close();
+});
+
+test('month and week views use a seven-column calendar layout', async () => {
+  const state = defaultState();
+  state.settings.gridView = 'month';
+  const app = await buildPage({ htmlFile: 'grid.html', scriptFile: 'src/grid-widget.js', state });
+  const { document } = app;
+  assert.equal(document.getElementById('fitted-grid').classList.contains('calendar-layout'), true);
+  assert.equal(document.getElementById('day-grid').getAttribute('aria-colcount'), '7');
+  assert.ok(document.querySelectorAll('.day-number').length >= 28);
+
+  await app.window.zemen.patchSettings({ gridView: 'week' });
+  await tick();
+  assert.equal(document.getElementById('day-grid').getAttribute('aria-colcount'), '7');
+  assert.equal(document.getElementById('day-grid').getAttribute('aria-rowcount'), '1');
+  app.dom.window.close();
+});
+
+test('clock widget uses Addis Ababa Ethiopian clock time and an inline date', async () => {
   const app = await buildPage({ htmlFile: 'clock.html', scriptFile: 'src/clock-widget.js' });
   const { document } = app;
+  const addisParts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US-u-nu-latn', {
+      timeZone: 'Africa/Addis_Ababa',
+      hour: '2-digit',
+      hourCycle: 'h23'
+    })
+      .formatToParts(new Date())
+      .filter((part) => part.type === 'hour')
+      .map((part) => [part.type, Number(part.value)])
+  );
+  const expectedHour = ((addisParts.hour + 5) % 12) + 1;
+  const displayedHour = Number(document.getElementById('clock-time').textContent.split(':')[0]);
+  const expectedDaypart = addisParts.hour >= 6 && addisParts.hour < 18 ? 'ቀን' : 'ሌሊት';
+
   assert.match(document.getElementById('clock-time').textContent, /^(?:[1-9]|1[0-2]):\d{2}:\d{2}$/);
-  assert.match(document.getElementById('clock-daypart').textContent, /^(ቀን|ምሽት)$/);
+  assert.equal(displayedHour, expectedHour);
+  assert.equal(document.getElementById('clock-daypart').textContent, expectedDaypart);
+  assert.equal(document.getElementById('clock-date').parentElement.classList.contains('clock-line'), true);
   assert.equal(document.getElementById('clock-header').classList.contains('hidden'), true);
-  assert.ok(app.calls.fitWidgets.some(({ type, height }) => type === 'clock' && height >= 150));
+  assert.ok(app.calls.fitWidgets.some(({ type, height }) => type === 'clock' && height >= 80 && height < 150));
   assert.equal(app.errors.length, 0);
 
   await app.window.zemen.patchSettings({ clockShowSeconds: false });
@@ -236,11 +295,12 @@ test('light and dark widget text colors meet WCAG AA contrast', () => {
   }
 
   const pairs = [
-    ['#f7f7f9', '#111318'],
-    ['#b3bac6', '#111318'],
-    ['#111827', '#f9fafb'],
-    ['#4b5563', '#f9fafb'],
-    ['#5f6b7a', '#f9fafb']
+    ['#ffffff', '#1f1f1f'],
+    ['#c7c7c7', '#1f1f1f'],
+    ['#9b9b9b', '#1f1f1f'],
+    ['#1a1a1a', '#f9f9f9'],
+    ['#5d5d5d', '#f9f9f9'],
+    ['#737373', '#f9f9f9']
   ];
   pairs.forEach(([foreground, background]) => {
     assert.ok(contrast(foreground, background) >= 4.5);

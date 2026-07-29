@@ -1,0 +1,28 @@
+ZEMEN GRID 2.2 — RESPONSIVE FLUENT UPDATE
+
+Calendar widget
+- The renderer preserves the user-selected width and changes only the window height.
+- Responsive year view reveals the current month, 3 months, 6 months, or all 13 months according to width.
+- Month view now uses a standard seven-column calendar with Ethiopian day numbers.
+- Week view now uses one compact horizontal seven-day row.
+- Window minimum width was reduced so the single-month breakpoint is usable.
+- Window height is clamped to the active display instead of a fixed 520 px cap.
+
+Clock widget
+- Time is anchored to Africa/Addis_Ababa.
+- Ethiopian clock-hour conversion is applied: Addis Ababa 14:00 displays as 8:00 ቀን.
+- Day/night labels are now ቀን and ሌሊት.
+- Time, daypart, and optional Ethiopian date are placed on one row.
+- Daypart text has no pill or background.
+- Hover details are an absolute acrylic overlay and reserve no layout space.
+- Clock typography uses Segoe UI Variable Display with corrected weight and tracking.
+
+UI and packaging
+- Widgets and control center were restyled with Windows 11 Fluent-inspired surfaces, spacing, typography, states, and SVG icons.
+- The misplaced preload script was moved to electron/preload.js, matching Electron and package configuration.
+- Package version updated to 2.2.0.
+
+Verification
+- All JavaScript source files pass node --check.
+- Ethiopian calendar tests pass, including Pagumen, leap years, and full-year round trips.
+- Real Chromium rendering verified all responsive breakpoints, month/week layouts, clock conversion, inline date, and overlay behavior without runtime errors.

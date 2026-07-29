@@ -1,10 +1,11 @@
-ZEMEN GRID 2 — QUICK START
+ZEMEN GRID 2.2 — QUICK START
 
 Windows:
 1. Install Node.js LTS from https://nodejs.org/
 2. Double-click START-ZEMEN-GRID.bat
-3. Move and resize the grid and clock as separate desktop widgets.
-4. Right-click either widget for quick controls.
+3. Resize the calendar width to reveal 1, 3, 6, or all 13 Ethiopian months.
+4. The clock uses Addis Ababa Ethiopian clock hours (for example, 14:00 becomes 8:00 ቀን).
+5. Right-click either widget for quick controls.
 
 The normal window is only a control center. Closing it leaves the widgets
 running in the system tray.
