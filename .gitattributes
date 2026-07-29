@@ -1,0 +1,6 @@
+# Normalize line endings
+* text=auto
+
+# Binary files
+*.png binary
+*.zip binary

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>Zemen Grid Controls</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-theme="dark">
+    <main class="control-shell">
+      <header class="control-hero">
+        <div class="brand-icon" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <p class="eyebrow">ETHIOPIAN TIME AT A GLANCE</p>
+          <h1>Zemen Grid</h1>
+          <p class="hero-copy">Control the two floating widgets. Right-click either widget for quick options.</p>
+        </div>
+      </header>
+
+      <section class="widget-list" aria-labelledby="widgets-title">
+        <div class="section-heading">
+          <h2 id="widgets-title">Widgets</h2>
+          <span id="current-ethiopian-year">— ዓ.ም.</span>
+        </div>
+
+        <article class="widget-card">
+          <div class="widget-card-icon grid-icon" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="widget-card-copy">
+            <strong>Year grid</strong>
+            <small>Scalable heatmap · no scrolling</small>
+          </div>
+          <button class="subtle-button" id="show-grid" type="button">Show</button>
+          <label class="switch" title="Show grid widget">
+            <input id="grid-visible" type="checkbox">
+            <span aria-hidden="true"></span>
+          </label>
+        </article>
+
+        <article class="widget-card">
+          <div class="widget-card-icon clock-icon" aria-hidden="true">1:24</div>
+          <div class="widget-card-copy">
+            <strong>Local clock</strong>
+            <small>12-hour time · ቀን / ምሽት</small>
+          </div>
+          <button class="subtle-button" id="show-clock" type="button">Show</button>
+          <label class="switch" title="Show clock widget">
+            <input id="clock-visible" type="checkbox">
+            <span aria-hidden="true"></span>
+          </label>
+        </article>
+      </section>
+
+      <section class="control-section">
+        <h2>Appearance</h2>
+        <div class="setting-row">
+          <div>
+            <strong>Always on top</strong>
+            <small>Keep both widgets above other windows</small>
+          </div>
+          <label class="switch">
+            <input id="always-on-top" type="checkbox">
+            <span aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Theme</span>
+          <div class="segmented-control" id="theme-control" role="group" aria-label="Theme">
+            <button data-theme-value="system" type="button">System</button>
+            <button data-theme-value="dark" type="button">Dark</button>
+            <button data-theme-value="light" type="button">Light</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Grid color</span>
+          <div class="color-row" id="color-presets" role="group" aria-label="Grid color">
+            <button data-color="#39d353" style="--swatch:#39d353" type="button" aria-label="Green"></button>
+            <button data-color="#21c7a8" style="--swatch:#21c7a8" type="button" aria-label="Teal"></button>
+            <button data-color="#58a6ff" style="--swatch:#58a6ff" type="button" aria-label="Blue"></button>
+            <button data-color="#d2a8ff" style="--swatch:#d2a8ff" type="button" aria-label="Violet"></button>
+            <button data-color="#f2cc60" style="--swatch:#f2cc60" type="button" aria-label="Amber"></button>
+            <label class="custom-color" title="Custom color">
+              <input id="custom-color" type="color" value="#39d353">
+              <span>+</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <strong>Open controls on launch</strong>
+            <small>Widgets can still run without this window</small>
+          </div>
+          <label class="switch">
+            <input id="controller-on-launch" type="checkbox">
+            <span aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <details class="control-details">
+        <summary>
+          <span>
+            <strong>Grid widget</strong>
+            <small>Choose only the context you want visible</small>
+          </span>
+          <span class="chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="details-body">
+          <div class="field-group">
+            <span class="field-label">Default view</span>
+            <div class="segmented-control" id="grid-view-control" role="group" aria-label="Grid view">
+              <button data-grid-view="year" type="button">Year</button>
+              <button data-grid-view="month" type="button">Month</button>
+              <button data-grid-view="week" type="button">Week</button>
+            </div>
+          </div>
+          <label class="check-row">
+            <span><strong>Month labels</strong><small>Small labels above the cells</small></span>
+            <input id="grid-show-months" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Weekday labels</strong><small>Mon, Wed, Fri beside the cells</small></span>
+            <input id="grid-show-weekdays" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Legend</strong><small>Elapsed · today · remaining</small></span>
+            <input id="grid-show-legend" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Widget header</strong><small>Year and remaining-day count</small></span>
+            <input id="grid-show-header" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Hover details</strong><small>Reveal year progress when hovering</small></span>
+            <input id="grid-hover-details" type="checkbox">
+          </label>
+          <p class="details-tip">Resize the width to choose the scale; height fits automatically. Drag from the padding or labels, click a cell for notes, and right-click for quick settings.</p>
+        </div>
+      </details>
+
+      <details class="control-details">
+        <summary>
+          <span>
+            <strong>Clock widget</strong>
+            <small>12-hour local time with an explicit day/night word</small>
+          </span>
+          <span class="chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="details-body">
+          <div class="fixed-clock-format">
+            <span class="format-example">1:16:53</span>
+            <span class="daypart-example">ቀን</span>
+            <small>06:00–17:59 is ቀን; all other hours are ምሽት.</small>
+          </div>
+          <label class="check-row">
+            <span><strong>Ethiopian date</strong><small>Show below the time</small></span>
+            <input id="clock-show-date" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Seconds</strong><small>Hide for a calmer clock</small></span>
+            <input id="clock-show-seconds" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Widget header</strong><small>Small “Local time” label</small></span>
+            <input id="clock-show-header" type="checkbox">
+          </label>
+          <label class="check-row">
+            <span><strong>Hover details</strong><small>Reveal timezone and year position</small></span>
+            <input id="clock-hover-details" type="checkbox">
+          </label>
+        </div>
+      </details>
+
+      <details class="control-details">
+        <summary>
+          <span>
+            <strong>Deadline</strong>
+            <small id="deadline-status">No deadline set</small>
+          </span>
+          <span class="chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="details-body">
+          <label class="stacked-field">
+            <span>Goal name</span>
+            <input id="deadline-title" type="text" maxlength="60" placeholder="e.g. Finish portfolio">
+          </label>
+          <div class="deadline-grid">
+            <label class="stacked-field">
+              <span>Year</span>
+              <input id="deadline-year" type="number" min="1" max="9000">
+            </label>
+            <label class="stacked-field">
+              <span>Month</span>
+              <select id="deadline-month"></select>
+            </label>
+            <label class="stacked-field">
+              <span>Day</span>
+              <input id="deadline-day" type="number" min="1" max="30">
+            </label>
+          </div>
+          <p class="deadline-preview" id="deadline-preview">Choose an Ethiopian date</p>
+          <div class="button-row">
+            <button class="text-button hidden" id="clear-deadline" type="button">Clear</button>
+            <button class="primary-button" id="save-deadline" type="button">Set deadline</button>
+          </div>
+        </div>
+      </details>
+
+      <footer class="control-footer">
+        <span id="app-version">Zemen Grid</span>
+        <span>Notes and settings stay on this device.</span>
+      </footer>
+    </main>
+
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="src/calendar.js"></script>
+    <script src="src/controller.js"></script>
+  </body>
+</html>

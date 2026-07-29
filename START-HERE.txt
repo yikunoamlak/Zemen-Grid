@@ -1,0 +1,15 @@
+ZEMEN GRID 2 — QUICK START
+
+Windows:
+1. Install Node.js LTS from https://nodejs.org/
+2. Double-click START-ZEMEN-GRID.bat
+3. Move and resize the grid and clock as separate desktop widgets.
+4. Right-click either widget for quick controls.
+
+The normal window is only a control center. Closing it leaves the widgets
+running in the system tray.
+
+To create a portable .exe:
+Double-click BUILD-WINDOWS.bat, then open the dist folder.
+
+Your day notes, deadline, window positions, and settings stay on your device.

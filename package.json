@@ -1,0 +1,62 @@
+{
+  "name": "zemen-grid",
+  "version": "2.1.0",
+  "description": "Two calm, always-on-top Ethiopian calendar desktop widgets.",
+  "main": "electron/main.js",
+  "author": "Zemen Grid",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check electron/main.js && node --check electron/preload.js && node --check src/calendar.js && node --check src/controller.js && node --check src/grid-widget.js && node --check src/clock-widget.js && node --check src/note.js",
+    "test": "node --test tests/calendar.test.js tests/renderer.test.js",
+    "verify": "npm run check && npm test",
+    "build:windows": "electron-builder --win portable --x64",
+    "build:linux": "electron-builder --linux AppImage --x64"
+  },
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3",
+    "jsdom": "29.0.1"
+  },
+  "build": {
+    "appId": "com.zemengrid.desktop",
+    "productName": "Zemen Grid",
+    "asar": true,
+    "files": [
+      "index.html",
+      "grid.html",
+      "clock.html",
+      "note.html",
+      "styles.css",
+      "widget.css",
+      "src/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "README.md",
+      "LICENSE"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Zemen-Grid-${version}-${arch}.${ext}",
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "artifactName": "Zemen-Grid-${version}-${arch}.${ext}",
+      "icon": "assets/icon.png",
+      "category": "Utility"
+    }
+  }
+}

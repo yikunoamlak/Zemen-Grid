@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>Zemen Grid Widget</title>
+    <link rel="stylesheet" href="widget.css">
+  </head>
+  <body class="grid-widget" data-theme="dark">
+    <main class="widget-shell" id="widget-shell">
+      <header class="widget-header hidden" id="widget-header">
+        <button class="widget-nav no-drag" id="previous-range" type="button" aria-label="Previous period">‹</button>
+        <strong id="range-title">— ዓ.ም.</strong>
+        <span id="header-days-left">— days left</span>
+        <button class="widget-nav no-drag" id="next-range" type="button" aria-label="Next period">›</button>
+        <button class="widget-menu-button no-drag" id="open-controls" type="button" aria-label="Open controls" title="Open controls">•••</button>
+      </header>
+
+      <section class="grid-viewport" id="grid-viewport" aria-label="Ethiopian calendar heatmap">
+        <div class="fitted-grid" id="fitted-grid">
+          <div class="month-label-row" id="month-labels" aria-hidden="true"></div>
+          <div class="heatmap-row">
+            <div class="weekday-labels" id="weekday-labels" aria-hidden="true"></div>
+            <div class="day-grid no-drag" id="day-grid" role="grid" aria-label="Ethiopian calendar days"></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="widget-legend hidden" id="widget-legend">
+        <span>Elapsed</span>
+        <i class="legend-cell level-2"></i>
+        <i class="legend-cell today-sample"></i>
+        <i class="legend-cell future-sample"></i>
+        <span>Remaining</span>
+      </footer>
+
+      <div class="hover-summary" id="hover-summary" aria-hidden="true">
+        <strong id="hover-days-left">— days left</strong>
+        <span id="hover-progress">Day — of —</span>
+        <span class="right-click-hint">Right-click for controls</span>
+      </div>
+    </main>
+
+    <div class="day-tooltip hidden" id="day-tooltip" role="tooltip">
+      <strong id="tooltip-date"></strong>
+      <span id="tooltip-gregorian"></span>
+      <p class="hidden" id="tooltip-note"></p>
+    </div>
+
+    <script src="src/calendar.js"></script>
+    <script src="src/grid-widget.js"></script>
+  </body>
+</html>
