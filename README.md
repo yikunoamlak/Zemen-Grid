@@ -1,8 +1,8 @@
-# Zemen Grid 2.2
+# Zemen Grid 2.3
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Electron](https://img.shields.io/badge/Electron-43.2.0-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
-[![Version](https://img.shields.io/badge/version-2.2.0-blue)]()
+[![Version](https://img.shields.io/badge/version-2.3.0-blue)]()
 [![Platform](https://img.shields.io/badge/platform-Windows%20|%20Linux-lightgrey)]()
 
 > **Zemen Grid** — two calm, always-on-top Ethiopian calendar desktop widgets.
@@ -10,7 +10,7 @@
 A widget-first Ethiopian calendar desktop app. Runs as two independent floating surfaces:
 
 - **Responsive calendar** — a frameless Ethiopian calendar that reveals the current month, 3 months, 6 months, or all 13 months as its width grows. Month and week views use a familiar seven-column calendar layout.
-- **Ethiopian clock** — a compact Addis Ababa clock using Ethiopian clock hours with explicit `ቀን` (day) and `ሌሊት` (night) labels.
+- **Ethiopian clock** — a compact Addis Ababa clock using Ethiopian clock hours with Amharic daypart labels (`ጧት`, `ከሰአት`, `ምሽት`, `ሌሊት`).
 
 A small control center and system-tray menu turn either widget on or off. The ordinary app window is never required for the widgets to remain visible.
 
@@ -32,10 +32,14 @@ A small control center and system-tray menu turn either widget on or off. The or
 - Ethiopian-date deadline with hover countdown
 - Tray menu for showing widgets, opening controls, or quitting
 
-The clock is anchored to `Africa/Addis_Ababa` and uses Ethiopian clock hours. For example, Addis Ababa `14:00` is displayed as `8:00 ቀን`.
+The clock is anchored to `Africa/Addis_Ababa` and uses Ethiopian clock hours. The daypart label follows Addis Ababa civil time:
 
-- Addis Ababa `06:00–17:59` → `ቀን`
-- Addis Ababa `18:00–05:59` → `ሌሊት`
+| Addis Ababa time | Label | Example |
+|---|---|---|
+| 06:00–11:59 | `ጧት` (morning) | 12:00 ጧት |
+| 12:00–17:59 | `ከሰአት` (afternoon) | 8:16 ከሰአት |
+| 18:00–23:59 | `ምሽት` (evening) | 12:00 ምሽት |
+| 00:00–05:59 | `ሌሊት` (night) | 11:30 ሌሊት |
 
 ---
 
@@ -91,7 +95,7 @@ Runs static analysis and automated tests covering Ethiopic conversion, Pagumen, 
 
 ## Privacy
 
-Settings, window positions, deadlines, and notes are stored in the standard per-user application-data folder. Version 2.2 automatically migrates notes and compatible appearance settings from version 1. No data leaves your device.
+Settings, window positions, deadlines, and notes are stored in the standard per-user application-data folder. Version 2.3 automatically migrates notes and compatible appearance settings from version 1. No data leaves your device.
 
 ---
 
