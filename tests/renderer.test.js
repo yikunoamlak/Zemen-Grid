@@ -176,9 +176,6 @@ test('controller manages independent widgets and appearance', async () => {
   assert.equal(app.getState().settings.theme, 'light');
   assert.equal(document.body.dataset.theme, 'light');
 
-  click(window, document.getElementById('show-clock'));
-  await tick();
-  assert.ok(app.calls.showWidgets.includes('clock'));
   app.dom.window.close();
 });
 

@@ -6,6 +6,9 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
     >
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark light">
     <title>Zemen Grid Controls</title>
@@ -15,7 +18,69 @@
     <main class="control-shell">
       <header class="control-hero">
         <h1 class="title-row">
-          <img class="title-logo" src="assets/icon.svg" alt="" aria-hidden="true">
+          <svg class="title-logo" viewBox="0 0 512 512" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M512,112L512,400C512,461.814 461.814,512 400,512L112,512C50.186,512 0,461.814 0,400L0,112C0,50.186 50.186,0 112,0L400,0C461.814,0 512,50.186 512,112Z" style="fill:var(--panel-strong,#161e28);"/>
+            <g transform="matrix(1,0,0,1,100,102)">
+              <g transform="matrix(0.989147,0,0,0.994574,-6.178422,-6.212316)">
+                <g transform="matrix(1,0,0,1,1550.714404,2265.891595)">
+                  <g transform="matrix(1,0,0,1,149.390267,-1807.961062)">
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-451.684322)">
+                      <path d="M48,5.333L48,42.667C48,45.61 45.61,48 42.667,48L5.333,48C2.39,48 0,45.61 0,42.667L0,5.333C0,2.39 2.39,0 5.333,0L42.667,0C45.61,0 48,2.39 48,5.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                    </g>
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-451.684322)">
+                      <path d="M48,5.333L48,42.667C48,45.61 45.61,48 42.667,48L5.333,48C2.39,48 0,45.61 0,42.667L0,5.333C0,2.39 2.39,0 5.333,0L42.667,0C45.61,0 48,2.39 48,5.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.28;"/>
+                    </g>
+                  </g>
+                  <g transform="matrix(1,0,0,1,149.390267,-1894.961062)">
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-624.934322)">
+                      <path d="M48,203.333L48,240.667C48,243.61 45.61,246 42.667,246L5.333,246C2.39,246 0,243.61 0,240.667L0,203.333C0,200.39 2.39,198 5.333,198L42.667,198C45.61,198 48,200.39 48,203.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                    </g>
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-624.934322)">
+                      <path d="M48,203.333L48,240.667C48,243.61 45.61,246 42.667,246L5.333,246C2.39,246 0,243.61 0,240.667L0,203.333C0,200.39 2.39,198 5.333,198L42.667,198C45.61,198 48,200.39 48,203.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.48;"/>
+                    </g>
+                  </g>
+                  <g transform="matrix(1.875,0,0,1.875,-1544.468193,-2532.645383)">
+                    <path d="M48,269.333L48,306.667C48,309.61 45.61,312 42.667,312L5.333,312C2.39,312 0,309.61 0,306.667L0,269.333C0,266.39 2.39,264 5.333,264L42.667,264C45.61,264 48,266.39 48,269.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                  </g>
+                  <g transform="matrix(1.875,0,0,1.875,-1544.468193,-2532.645383)">
+                    <path d="M48,269.333L48,306.667C48,309.61 45.61,312 42.667,312L5.333,312C2.39,312 0,309.61 0,306.667L0,269.333C0,266.39 2.39,264 5.333,264L42.667,264C45.61,264 48,266.39 48,269.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.68;"/>
+                  </g>
+                </g>
+                <g transform="matrix(1,0,0,1,1776.137636,2265.891595)">
+                  <g transform="matrix(1,0,0,1,149.390267,-1807.961062)">
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-451.684322)">
+                      <path d="M48,5.333L48,42.667C48,45.61 45.61,48 42.667,48L5.333,48C2.39,48 0,45.61 0,42.667L0,5.333C0,2.39 2.39,0 5.333,0L42.667,0C45.61,0 48,2.39 48,5.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                    </g>
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-451.684322)">
+                      <path d="M48,5.333L48,42.667C48,45.61 45.61,48 42.667,48L5.333,48C2.39,48 0,45.61 0,42.667L0,5.333C0,2.39 2.39,0 5.333,0L42.667,0C45.61,0 48,2.39 48,5.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.28;"/>
+                    </g>
+                  </g>
+                  <g transform="matrix(1,0,0,1,149.390267,-1894.961062)">
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-624.934322)">
+                      <path d="M48,203.333L48,240.667C48,243.61 45.61,246 42.667,246L5.333,246C2.39,246 0,243.61 0,240.667L0,203.333C0,200.39 2.39,198 5.333,198L42.667,198C45.61,198 48,200.39 48,203.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                    </g>
+                    <g transform="matrix(1.875,0,0,1.875,-1693.85846,-624.934322)">
+                      <path d="M48,203.333L48,240.667C48,243.61 45.61,246 42.667,246L5.333,246C2.39,246 0,243.61 0,240.667L0,203.333C0,200.39 2.39,198 5.333,198L42.667,198C45.61,198 48,200.39 48,203.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.48;"/>
+                    </g>
+                  </g>
+                  <g transform="matrix(1.875,0,0,1.875,-1544.468193,-2532.645383)">
+                    <path d="M48,269.333L48,306.667C48,309.61 45.61,312 42.667,312L5.333,312C2.39,312 0,309.61 0,306.667L0,269.333C0,266.39 2.39,264 5.333,264L42.667,264C45.61,264 48,266.39 48,269.333Z" style="fill:var(--panel-strong,#161e28);stroke:var(--border,#30363d);stroke-width:3px;"/>
+                  </g>
+                  <g transform="matrix(1.875,0,0,1.875,-1544.468193,-2532.645383)">
+                    <path d="M48,269.333L48,306.667C48,309.61 45.61,312 42.667,312L5.333,312C2.39,312 0,309.61 0,306.667L0,269.333C0,266.39 2.39,264 5.333,264L42.667,264C45.61,264 48,266.39 48,269.333Z" style="fill:var(--accent,#39d353);fill-opacity:0.68;"/>
+                  </g>
+                </g>
+                <g transform="matrix(1,0,0,1,1701.104671,463.329751)">
+                  <g transform="matrix(1.875,0,0,1.875,-1830.35846,-589.184322)">
+                    <path d="M180,137.333L180,174.667C180,177.61 177.61,180 174.667,180L137.333,180C134.39,180 132,177.61 132,174.667L132,137.333C132,134.39 134.39,132 137.333,132L174.667,132C177.61,132 180,134.39 180,137.333Z" style="fill:var(--accent,#39d353);"/>
+                  </g>
+                  <g transform="matrix(1.875,0,0,1.875,-1830.35846,-591.184322)">
+                    <path d="M180,137.333L180,174.667C180,177.61 177.61,180 174.667,180L137.333,180C134.39,180 132,177.61 132,174.667L132,137.333C132,134.39 134.39,132 137.333,132L174.667,132C177.61,132 180,134.39 180,137.333Z" style="fill:none;stroke:var(--text,#f0f6fc);stroke-width:2.99px;"/>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
           <span>Zemen Grid</span>
           <span class="title-tag">– Ethiopian time at a glance</span>
         </h1>
@@ -29,14 +94,13 @@
         </div>
 
         <article class="widget-card">
-          <div class="widget-card-icon grid-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="2"/><path d="M3.5 9h17M8 3v3M16 3v3M8 12h2M12 12h2M16 12h2M8 16h2M12 16h2M16 16h2"/></svg>
+          <div class="widget-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="17" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 9h17M8 3v3M16 3v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13" r="1.5" fill="currentColor" opacity="0.3"/><circle cx="14" cy="17" r="1.5" fill="var(--accent, #39d353)"/></svg>
           </div>
           <div class="widget-card-copy">
             <strong>Responsive calendar</strong>
             <small>1, 3, 6, or 13 months as you resize</small>
           </div>
-          <button class="subtle-button" id="show-grid" type="button">Show</button>
           <label class="switch" title="Show grid widget">
             <input id="grid-visible" type="checkbox">
             <span aria-hidden="true"></span>
@@ -44,8 +108,8 @@
         </article>
 
         <article class="widget-card">
-          <div class="widget-card-icon clock-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          <div class="widget-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7.5V12l2.5 1.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="widget-card-copy">
             <strong>Ethiopian clock</strong>
@@ -53,7 +117,6 @@
               Addis Ababa time · ጧት / ከሰአት / ምሽት / ሌሊት
             </small>
           </div>
-          <button class="subtle-button" id="show-clock" type="button">Show</button>
           <label class="switch" title="Show clock widget">
             <input id="clock-visible" type="checkbox">
             <span aria-hidden="true"></span>
@@ -61,54 +124,73 @@
         </article>
       </section>
 
-      <section class="control-section">
-        <h2>Appearance</h2>
-        <div class="setting-row">
-          <div>
-            <strong>Always on top</strong>
-            <small>Keep both widgets above other windows</small>
+      <details class="control-details">
+        <summary>
+          <span>
+            <strong>Appearance</strong>
+            <small>Theme, color, always on top, desktop mode</small>
+          </span>
+          <span class="chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="details-body">
+          <div class="setting-row">
+            <div>
+              <strong>Always on top</strong>
+              <small>Keep both widgets above other windows</small>
+            </div>
+            <label class="switch">
+              <input id="always-on-top" type="checkbox">
+              <span aria-hidden="true"></span>
+            </label>
           </div>
-          <label class="switch">
-            <input id="always-on-top" type="checkbox">
-            <span aria-hidden="true"></span>
-          </label>
-        </div>
 
-        <div class="field-group">
-          <span class="field-label">Theme</span>
-          <div class="segmented-control" id="theme-control" role="group" aria-label="Theme">
-            <button data-theme-value="system" type="button">System</button>
-            <button data-theme-value="dark" type="button">Dark</button>
-            <button data-theme-value="light" type="button">Light</button>
+          <div class="setting-row">
+            <div>
+              <strong>Desktop mode</strong>
+              <small>Pin widgets to the desktop, behind open windows</small>
+            </div>
+            <label class="switch">
+              <input id="desktop-mode" type="checkbox">
+              <span aria-hidden="true"></span>
+            </label>
           </div>
-        </div>
 
-        <div class="field-group">
-          <span class="field-label">Grid color</span>
-          <div class="color-row" id="color-presets" role="group" aria-label="Grid color">
-            <button data-color="#39d353" style="--swatch:#39d353" type="button" aria-label="Green"></button>
-            <button data-color="#21c7a8" style="--swatch:#21c7a8" type="button" aria-label="Teal"></button>
-            <button data-color="#58a6ff" style="--swatch:#58a6ff" type="button" aria-label="Blue"></button>
-            <button data-color="#d2a8ff" style="--swatch:#d2a8ff" type="button" aria-label="Violet"></button>
-            <button data-color="#f2cc60" style="--swatch:#f2cc60" type="button" aria-label="Amber"></button>
-            <label class="custom-color" title="Custom color">
-              <input id="custom-color" type="color" value="#39d353">
-              <span>+</span>
+          <div class="field-group">
+            <span class="field-label">Theme</span>
+            <div class="segmented-control" id="theme-control" role="group" aria-label="Theme">
+              <button data-theme-value="system" type="button">System</button>
+              <button data-theme-value="dark" type="button">Dark</button>
+              <button data-theme-value="light" type="button">Light</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Grid color</span>
+            <div class="color-row" id="color-presets" role="group" aria-label="Grid color">
+              <button data-color="#39d353" style="--swatch:#39d353" type="button" aria-label="Green"></button>
+              <button data-color="#21c7a8" style="--swatch:#21c7a8" type="button" aria-label="Teal"></button>
+              <button data-color="#58a6ff" style="--swatch:#58a6ff" type="button" aria-label="Blue"></button>
+              <button data-color="#d2a8ff" style="--swatch:#d2a8ff" type="button" aria-label="Violet"></button>
+              <button data-color="#f2cc60" style="--swatch:#f2cc60" type="button" aria-label="Amber"></button>
+              <label class="custom-color" title="Custom color">
+                <input id="custom-color" type="color" value="#39d353">
+                <span>+</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <strong>Open controls on launch</strong>
+              <small>Widgets can still run without this window</small>
+            </div>
+            <label class="switch">
+              <input id="controller-on-launch" type="checkbox">
+              <span aria-hidden="true"></span>
             </label>
           </div>
         </div>
-
-        <div class="setting-row">
-          <div>
-            <strong>Open controls on launch</strong>
-            <small>Widgets can still run without this window</small>
-          </div>
-          <label class="switch">
-            <input id="controller-on-launch" type="checkbox">
-            <span aria-hidden="true"></span>
-          </label>
-        </div>
-      </section>
+      </details>
 
       <details class="control-details">
         <summary>

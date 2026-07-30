@@ -23,6 +23,7 @@
 
   let state = null;
   let resizeObserver = null;
+  let cachedPadding = null;
 
   function resolvedTheme() {
     if (state.settings.theme !== 'system') return state.settings.theme;
@@ -140,20 +141,25 @@
 
   function fitClock() {
     if (!state) return;
-    const shellStyle = window.getComputedStyle(elements.widgetShell);
-    const pixel = (value, fallback) => {
-      const parsed = Number.parseFloat(value || '');
-      return Number.isFinite(parsed) ? parsed : fallback;
-    };
-    const horizontalPadding =
-      pixel(shellStyle.paddingLeft, 12) +
-      pixel(shellStyle.paddingRight, 12);
-    const verticalPadding =
-      pixel(shellStyle.paddingTop, 10) +
-      pixel(shellStyle.paddingBottom, 10);
-    const borderHeight =
-      pixel(shellStyle.borderTopWidth, 1) +
-      pixel(shellStyle.borderBottomWidth, 1);
+    if (!cachedPadding) {
+      const shellStyle = window.getComputedStyle(elements.widgetShell);
+      const pixel = (value, fallback) => {
+        const parsed = Number.parseFloat(value || '');
+        return Number.isFinite(parsed) ? parsed : fallback;
+      };
+      cachedPadding = {
+        horizontal:
+          pixel(shellStyle.paddingLeft, 12) +
+          pixel(shellStyle.paddingRight, 12),
+        vertical:
+          pixel(shellStyle.paddingTop, 10) +
+          pixel(shellStyle.paddingBottom, 10),
+        border:
+          pixel(shellStyle.borderTopWidth, 1) +
+          pixel(shellStyle.borderBottomWidth, 1)
+      };
+    }
+    const { horizontal: horizontalPadding, vertical: verticalPadding, border: borderHeight } = cachedPadding;
     const width =
       elements.clockContent.clientWidth ||
       Math.max(260, (elements.widgetShell.clientWidth || window.innerWidth || 520) - horizontalPadding);
@@ -178,11 +184,9 @@
   function bindEvents() {
     elements.openControls.addEventListener('click', () => api.showController());
     elements.clockContent.addEventListener('dblclick', () => api.showController());
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-      if (state?.settings.theme === 'system') applyAppearance();
-    });
     api.onState((nextState) => {
       state = nextState;
+      cachedPadding = null;
       applyAppearance();
       renderClock();
     });

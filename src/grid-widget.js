@@ -598,9 +598,6 @@
       if (cell) showTooltip(cell);
     });
     elements.dayGrid.addEventListener('focusout', () => elements.dayTooltip.classList.add('hidden'));
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-      if (state?.settings.theme === 'system') applyAppearance();
-    });
     api.onState((nextState) => {
       state = nextState;
       render();

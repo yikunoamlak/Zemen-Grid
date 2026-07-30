@@ -33,3 +33,6 @@ artifacts/
 
 # Code signing certificate (local)
 cert.pfx
+
+# Archives
+*.zip

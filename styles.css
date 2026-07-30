@@ -54,6 +54,24 @@ button {
   border: 0;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
@@ -86,13 +104,14 @@ summary:focus-visible {
   flex: 0 0 auto;
   width: 38px;
   height: 38px;
+  color: var(--text);
 }
 
 .title-tag {
   color: var(--muted);
-  font-size: 28px;
-  font-weight: 400;
-  letter-spacing: -0.03em;
+  font-size: 22px;
+  font-weight: 380;
+  letter-spacing: -0.02em;
 }
 
 .control-hero {
@@ -149,7 +168,7 @@ p {
 
 .widget-card {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto auto;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
   align-items: center;
   min-height: 62px;
   padding: 9px 0;
@@ -162,38 +181,15 @@ p {
 }
 
 .widget-card-icon {
-  width: 42px;
-  height: 42px;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
   border: 1px solid var(--border-soft);
   border-radius: 9px;
-  background: var(--bg);
-}
-
-.grid-icon {
-  display: grid;
-  grid-template-columns: repeat(4, 5px);
-  grid-template-rows: repeat(3, 5px);
-  place-content: center;
-  gap: 3px;
-}
-
-.grid-icon span {
-  border-radius: 1px;
-  background: color-mix(in srgb, var(--accent) 45%, var(--panel));
-}
-
-.grid-icon span:nth-child(3n),
-.grid-icon span:nth-child(7) {
-  background: var(--accent);
-}
-
-.clock-icon {
-  display: grid;
-  place-items: center;
   color: var(--accent);
-  font-size: 12px;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
+  background: var(--bg);
 }
 
 .widget-card-copy strong,
@@ -248,8 +244,8 @@ summary small {
 
 .switch {
   position: relative;
-  width: 34px;
-  height: 19px;
+  width: 38px;
+  height: 20px;
   flex: 0 0 auto;
 }
 
@@ -272,12 +268,16 @@ summary small {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--muted);
   transition: 130ms ease;
   content: "";
+}
+
+.switch:hover span::after {
+  background: var(--text);
 }
 
 .switch input:checked + span {
@@ -287,7 +287,11 @@ summary small {
 
 .switch input:checked + span::after {
   background: var(--accent-contrast);
-  transform: translateX(15px);
+  transform: translateX(18px);
+}
+
+.switch input:checked:hover + span::after {
+  filter: brightness(1.15);
 }
 
 .switch input:focus-visible + span {
@@ -308,9 +312,8 @@ summary small {
   gap: 20px;
 }
 
-.setting-row + .field-group,
-.field-group + .setting-row {
-  border-top: 1px solid var(--border-soft);
+.setting-row + .field-group {
+  padding-top: 6px;
 }
 
 .field-group {
@@ -322,8 +325,8 @@ summary small {
   display: block;
   margin-bottom: 7px;
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .segmented-control {
@@ -365,19 +368,32 @@ summary small {
 .custom-color {
   position: relative;
   display: grid;
-  width: 29px;
-  height: 29px;
+  width: 30px;
+  height: 30px;
   place-items: center;
   border: 2px solid var(--panel);
   border-radius: 50%;
   background: var(--swatch);
   box-shadow: 0 0 0 1px var(--border);
   cursor: pointer;
+  transition:
+    transform var(--win-motion-fast) linear,
+    box-shadow var(--win-motion-fast) linear;
+}
+
+.color-row > button:hover,
+.custom-color:hover {
+  transform: scale(1.11);
+  box-shadow: 0 0 0 1px var(--border), 0 2px 8px rgb(0 0 0 / 24%);
+}
+
+.color-row > button:active {
+  transform: scale(1.03);
 }
 
 .color-row > button.active::after {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border: 2px solid var(--accent-contrast);
   border-radius: 50%;
   content: "";
@@ -428,6 +444,14 @@ summary small {
 
 .check-row {
   cursor: pointer;
+  padding: 6px 8px;
+  margin: 4px -8px;
+  border-radius: var(--win-radius-control, 4px);
+  transition: background var(--win-motion-fast) linear;
+}
+
+.check-row:hover {
+  background: rgb(255 255 255 / 5%);
 }
 
 .check-row input {
@@ -486,11 +510,19 @@ summary small {
   color: var(--text);
   background: var(--bg);
   font-size: 12px;
+  transition:
+    border-color var(--win-motion-fast) linear,
+    box-shadow var(--win-motion-fast) linear;
+}
+
+.stacked-field input:hover,
+.stacked-field select:hover {
+  border-color: var(--muted);
 }
 
 .deadline-grid {
   display: grid;
-  grid-template-columns: 0.72fr 1.45fr 0.63fr;
+  grid-template-columns: 1fr 1.5fr 1fr;
   gap: 8px;
 }
 
@@ -509,6 +541,20 @@ summary small {
   background: var(--accent);
 }
 
+.primary-button:hover {
+  filter: brightness(1.1);
+}
+
+.primary-button:active {
+  filter: brightness(0.92);
+}
+
+.primary-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  filter: none;
+}
+
 .text-button {
   padding: 7px 0;
   color: var(--muted);
@@ -517,6 +563,10 @@ summary small {
 
 .text-button:hover {
   color: var(--text);
+}
+
+.text-button:active {
+  opacity: 0.7;
 }
 
 .control-footer {
@@ -550,20 +600,8 @@ summary small {
     grid-template-columns: 40px minmax(0, 1fr) auto;
   }
 
-  .widget-card .subtle-button {
-    display: none;
-  }
-
   .deadline-grid {
     grid-template-columns: 0.72fr 1.1fr 0.63fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
   }
 }
 
@@ -630,10 +668,11 @@ body {
 .title-logo {
   width: 36px;
   height: 36px;
+  color: var(--text);
 }
 
 .title-tag {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 400;
   line-height: 40px;
   letter-spacing: -0.01em;
@@ -685,14 +724,16 @@ summary strong {
 .setting-row small,
 .check-row small,
 summary small,
+.field-label,
+.stacked-field > span,
 .fixed-clock-format small,
 .details-tip,
 .deadline-preview,
 .control-footer {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 18px;
 }
 
 .widget-card {
@@ -715,18 +756,6 @@ summary small,
 .widget-card-icon svg {
   width: 21px;
   height: 21px;
-
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.4;
-}
-
-.grid-icon,
-.clock-icon {
-  display: grid;
-  place-items: center;
 }
 
 .subtle-button,
@@ -799,10 +828,6 @@ summary small,
 .segmented-control button.active {
   color: var(--text);
   background: var(--panel-strong);
-
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 20%),
-    inset 0 -2px var(--accent);
 }
 
 .control-details summary {
@@ -833,6 +858,22 @@ summary small,
 
   font-size: 14px;
   line-height: 20px;
+
+  transition:
+    border-color var(--win-motion-fast) linear,
+    box-shadow var(--win-motion-fast) linear;
+}
+
+.stacked-field input:hover,
+.stacked-field select:hover {
+  border-color: var(--subtle);
+}
+
+.stacked-field input:focus,
+.stacked-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  outline: none;
 }
 
 .format-example {
@@ -898,20 +939,6 @@ summary:focus-visible {
     );
 
   outline-offset: 2px;
-}
-
-body[data-theme="light"] {
-  --bg: #f3f3f3;
-  --panel: rgb(255 255 255 / 82%);
-  --panel-strong: #ffffff;
-
-  --text: #1a1a1a;
-  --muted: #4a4a4a;
-  --subtle: #525252;
-
-  --border: rgb(0 0 0 / 14%);
-  --border-soft: rgb(0 0 0 / 8%);
-  --accent-contrast: #071208;
 }
 
 @media (max-width: 500px) {
@@ -1069,9 +1096,6 @@ body[data-theme="light"] .segmented-control button:hover {
 body[data-theme="light"] .segmented-control button.active {
   color: var(--text);
   background: #e6e6e6;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 12%),
-    inset 0 -2px var(--accent-ui);
 }
 
 /* Text fields and selects */

@@ -23,9 +23,10 @@ const DEFAULT_SETTINGS = Object.freeze({
   clockShowHeader: false,
   clockShowSeconds: true,
   clockVisible: true,
-  controllerOnLaunch: true,
+  controllerOnLaunch: false,
   deadlineIso: '',
   deadlineTitle: '',
+  desktopMode: false,
   gridHoverDetails: true,
   gridShowHeader: false,
   gridShowLegend: false,
@@ -60,9 +61,12 @@ let isQuitting = false;
 let updateCheckTimer = null;
 let manualUpdateCheck = false;
 let updatePromptOpen = false;
+let updateRetryCount = 0;
+const MAX_UPDATE_RETRIES = 3;
+let desktopWatchdog = null;
 
 function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return structuredClone(value);
 }
 
 function sanitizeSettings(value) {
@@ -75,6 +79,7 @@ function sanitizeSettings(value) {
     'clockShowSeconds',
     'clockVisible',
     'controllerOnLaunch',
+    'desktopMode',
     'gridHoverDetails',
     'gridShowHeader',
     'gridShowLegend',
@@ -136,7 +141,7 @@ function writeState() {
 
 function scheduleStateWrite() {
   if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(writeState, 160);
+  saveTimer = setTimeout(writeState, 500);
 }
 
 function publicState() {
@@ -145,9 +150,11 @@ function publicState() {
 
 function broadcastState() {
   const payload = publicState();
-  Object.values(windows).forEach((win) => {
-    if (win && !win.isDestroyed()) win.webContents.send('state:changed', payload);
-  });
+  for (const win of Object.values(windows)) {
+    if (win && !win.isDestroyed()) {
+      try { win.webContents.send('state:changed', payload); } catch {}
+    }
+  }
   refreshTrayMenu();
 }
 
@@ -281,6 +288,8 @@ function createWidgetWindow(type) {
   if (windows[type] && !windows[type].isDestroyed()) return windows[type];
   const isGrid = type === 'grid';
   const bounds = resolvedBounds(type);
+  const focusable = !state.settings.desktopMode;
+  const alwaysOnTop = state.settings.desktopMode ? false : state.settings.alwaysOnTop;
   const win = new BrowserWindow({
     ...bounds,
     minWidth: isGrid ? 320 : 300,
@@ -297,7 +306,8 @@ function createWidgetWindow(type) {
     fullscreenable: false,
     skipTaskbar: true,
     show: false,
-    alwaysOnTop: state.settings.alwaysOnTop,
+    focusable,
+    alwaysOnTop,
     hasShadow: true,
     webPreferences: secureWebPreferences()
   });
@@ -306,6 +316,13 @@ function createWidgetWindow(type) {
   guardNavigation(win);
   rememberBounds(win, type);
   win.webContents.on('context-menu', () => showWidgetMenu(type, win));
+  if (state.settings.desktopMode) startDesktopWatchdog();
+  win.on('hide', () => {
+    if (state.settings.desktopMode) showWidgetNow(win);
+  });
+  win.on('minimize', () => {
+    if (state.settings.desktopMode) showWidgetNow(win);
+  });
   win.on('close', (event) => {
     if (isQuitting) return;
     event.preventDefault();
@@ -401,15 +418,49 @@ function applyWidgetVisibility() {
   });
 }
 
+function showWidgetNow(win) {
+  if (!win || win.isDestroyed()) return;
+  if (win.isMinimized()) win.restore();
+  if (!win.isVisible()) win.showInactive();
+}
+
+function startDesktopWatchdog() {
+  stopDesktopWatchdog();
+  desktopWatchdog = setInterval(() => {
+    ['grid', 'clock'].forEach((type) => {
+      const win = windows[type];
+      if (win && !win.isDestroyed() && (!win.isVisible() || win.isMinimized())) {
+        showWidgetNow(win);
+      }
+    });
+  }, 50);
+}
+
+function stopDesktopWatchdog() {
+  if (desktopWatchdog) {
+    clearInterval(desktopWatchdog);
+    desktopWatchdog = null;
+  }
+}
+
 function applyWindowSettings() {
+  const desktopMode = state.settings.desktopMode;
+  const alwaysOnTop = desktopMode ? false : state.settings.alwaysOnTop;
+  const focusable = !desktopMode;
+  if (desktopMode) {
+    startDesktopWatchdog();
+  } else {
+    stopDesktopWatchdog();
+  }
   ['grid', 'clock'].forEach((type) => {
     const win = windows[type];
     if (win && !win.isDestroyed()) {
-      win.setAlwaysOnTop(state.settings.alwaysOnTop, 'floating');
+      win.setAlwaysOnTop(alwaysOnTop, 'floating');
+      if (win.setFocusable) win.setFocusable(focusable);
     }
   });
   if (windows.note && !windows.note.isDestroyed()) {
-    windows.note.setAlwaysOnTop(state.settings.alwaysOnTop, 'floating');
+    windows.note.setAlwaysOnTop(alwaysOnTop, 'floating');
   }
 }
 
@@ -546,14 +597,46 @@ function refreshTrayMenu() {
         checked: settings.clockVisible,
         click: (item) => patchSettings({ clockVisible: item.checked })
       },
+      { type: 'separator' },
+      {
+        label: 'Grid view',
+        submenu: ['year', 'month', 'week'].map((view) => ({
+          label: view[0].toUpperCase() + view.slice(1),
+          type: 'radio',
+          checked: settings.gridView === view,
+          click: () => patchSettings({ gridView: view })
+        }))
+      },
       {
         label: 'Always on top',
         type: 'checkbox',
         checked: settings.alwaysOnTop,
-        click: (item) => patchSettings({ alwaysOnTop: item.checked })
+        click: (item) => {
+          patchSettings({ alwaysOnTop: item.checked, desktopMode: false });
+        }
+      },
+      {
+        label: 'Desktop mode',
+        type: 'checkbox',
+        checked: settings.desktopMode,
+        click: (item) => {
+          patchSettings({ desktopMode: item.checked });
+        }
+      },
+      {
+        label: 'Theme',
+        submenu: ['system', 'dark', 'light'].map((theme) => ({
+          label: theme[0].toUpperCase() + theme.slice(1),
+          type: 'radio',
+          checked: settings.theme === theme,
+          click: () => patchSettings({ theme })
+        }))
       },
       { type: 'separator' },
-      { label: 'Check for updates', click: () => checkForUpdates(true) },
+      {
+        label: 'Check for updates',
+        click: () => checkForUpdates(true)
+      },
       { type: 'separator' },
       { label: 'Quit', click: () => app.quit() }
     ])
@@ -592,9 +675,17 @@ function showUpdateMessage(title, message) {
 
 function checkForUpdates(manual = false) {
   manualUpdateCheck = manual;
+  updateRetryCount = 0;
   autoUpdater.checkForUpdates().catch(err => {
     updaterLog(`check error: ${err.message}`);
-    if (manual) showUpdateMessage('Update Check', `Could not check for updates:\n${err.message}`);
+    if (manual) {
+      showUpdateMessage('Update Check', `Could not check for updates:\n${err.message}`);
+    } else if (updateRetryCount < MAX_UPDATE_RETRIES) {
+      updateRetryCount += 1;
+      const delay = Math.min(30000, 5000 * Math.pow(2, updateRetryCount));
+      updaterLog(`retry ${updateRetryCount}/${MAX_UPDATE_RETRIES} in ${delay}ms`);
+      setTimeout(() => checkForUpdates(false), delay);
+    }
   });
 }
 
@@ -628,9 +719,11 @@ function setupAutoUpdater() {
   });
   autoUpdater.on('download-progress', (progress) => {
     updaterLog(`download progress: ${progress.percent.toFixed(1)}%`);
+    if (tray) tray.setToolTip(`Zemen Grid · downloading ${progress.percent.toFixed(0)}%`);
   });
   autoUpdater.on('update-downloaded', (info) => {
     updaterLog(`update downloaded: ${info.version}`);
+    if (tray) tray.setToolTip('Zemen Grid');
     const parent = getUpdateParentWindow();
     if (updatePromptOpen) return;
     updatePromptOpen = true;
@@ -719,13 +812,13 @@ function registerIpc() {
 app.whenReady().then(() => {
   loadState();
   registerIpc();
-  createControllerWindow();
   createWidgetWindow('grid');
   createWidgetWindow('clock');
+  createControllerWindow();
   createTray();
   applyWindowSettings();
   applyWidgetVisibility();
-  if (state.settings.controllerOnLaunch) showController();
+  if (state.settings.controllerOnLaunch && !state.settings.desktopMode) showController();
   setupAutoUpdater();
 });
 
@@ -734,6 +827,7 @@ app.on('activate', showController);
 app.on('before-quit', () => {
   isQuitting = true;
   writeState();
+  stopDesktopWatchdog();
   if (updateCheckTimer) clearInterval(updateCheckTimer);
 });
 

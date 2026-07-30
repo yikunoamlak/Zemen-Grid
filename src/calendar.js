@@ -8,6 +8,7 @@
   const DAY_MS = 86_400_000;
   const yearStartCache = new Map();
   const yearLengthCache = new Map();
+  const MAX_CACHED_YEARS = 20;
 
   const MONTHS = {
     am: [
@@ -125,6 +126,11 @@
       throw new RangeError('Ethiopian year must be an integer from 1 to 9000');
     }
     if (yearStartCache.has(year)) return new Date(yearStartCache.get(year));
+    if (yearStartCache.size >= MAX_CACHED_YEARS) {
+      const oldest = yearStartCache.keys().next().value;
+      yearStartCache.delete(oldest);
+      yearLengthCache.delete(oldest);
+    }
 
     // Meskerem 1 falls in September of Gregorian year (Ethiopian year + 7).
     // Scanning a bounded window delegates the calendar conversion to ICU/Intl.

@@ -16,6 +16,7 @@
       'color-presets',
       'controller-on-launch',
       'current-ethiopian-year',
+      'desktop-mode',
       'custom-color',
       'deadline-day',
       'deadline-month',
@@ -30,8 +31,6 @@
       'grid-show-weekdays',
       'grid-visible',
       'save-deadline',
-      'show-clock',
-      'show-grid',
       'theme-control',
       'toast'
     ].map((id) => [
@@ -77,6 +76,7 @@
     elements.clockVisible.checked = settings.clockVisible;
     elements.controllerOnLaunch.checked = settings.controllerOnLaunch;
     elements.customColor.value = settings.accent;
+    elements.desktopMode.checked = settings.desktopMode;
     elements.gridHoverDetails.checked = settings.gridHoverDetails;
     elements.gridShowHeader.checked = settings.gridShowHeader;
     elements.gridShowLegend.checked = settings.gridShowLegend;
@@ -216,6 +216,7 @@
       [elements.clockShowSeconds, 'clockShowSeconds'],
       [elements.clockVisible, 'clockVisible'],
       [elements.controllerOnLaunch, 'controllerOnLaunch'],
+      [elements.desktopMode, 'desktopMode'],
       [elements.gridHoverDetails, 'gridHoverDetails'],
       [elements.gridShowHeader, 'gridShowHeader'],
       [elements.gridShowLegend, 'gridShowLegend'],
@@ -225,15 +226,6 @@
     ]);
     toggleMap.forEach((key, input) => {
       input.addEventListener('change', () => patchSettings({ [key]: input.checked }));
-    });
-
-    elements.showGrid.addEventListener('click', async () => {
-      await api.showWidget('grid');
-      showToast('Grid widget shown');
-    });
-    elements.showClock.addEventListener('click', async () => {
-      await api.showWidget('clock');
-      showToast('Clock widget shown');
     });
 
     elements.themeControl.addEventListener('click', (event) => {
@@ -262,9 +254,6 @@
       syncDeadlineForm();
     });
 
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-      if (state?.settings.theme === 'system') applyTheme();
-    });
     api.onState((nextState) => {
       state = nextState;
       updateControlState();

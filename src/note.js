@@ -3,7 +3,8 @@
 
   const Calendar = window.ZemenCalendar;
   const api = window.zemen;
-  const iso = new URLSearchParams(window.location.search).get('date') || '';
+  const rawIso = new URLSearchParams(window.location.search).get('date') || '';
+const iso = /^\d{4}-\d{2}-\d{2}$/.test(rawIso) ? rawIso : '';
   const elements = Object.fromEntries(
     [
       'cancel-note',
@@ -63,9 +64,6 @@
         event.preventDefault();
         saveNote();
       }
-    });
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-      if (state?.settings.theme === 'system') applyAppearance();
     });
     api.onState((nextState) => {
       state = nextState;

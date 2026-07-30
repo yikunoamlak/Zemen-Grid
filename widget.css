@@ -35,6 +35,20 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--border);
+}
+
 html,
 body {
   width: 100%;
@@ -146,7 +160,7 @@ input {
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.35;
+  stroke-width: 1.5;
 }
 
 .widget-nav:hover,
@@ -326,6 +340,10 @@ input {
   transform: translateY(-1px);
 }
 
+.day-cell:active {
+  transform: translateY(0) scale(0.96);
+}
+
 .day-cell.level-1,
 .legend-cell.level-1 {
   border-color: color-mix(in srgb, var(--level-1) 72%, var(--empty-border));
@@ -400,11 +418,11 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 28px;
+  min-height: 30px;
   padding-top: 8px;
   color: var(--muted);
-  font-size: 10px;
-  gap: 7px;
+  font-size: 12px;
+  gap: 8px;
 }
 
 .legend-cell {
@@ -492,7 +510,7 @@ input {
 .day-tooltip span,
 .day-tooltip p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .day-tooltip p {
@@ -613,9 +631,9 @@ input {
 .note-heading p {
   margin: 0 0 6px;
   color: var(--subtle);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 .note-heading h1 {
@@ -629,7 +647,7 @@ input {
   display: block;
   margin-top: 5px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .intensity-field {
@@ -643,7 +661,7 @@ input {
   display: block;
   margin-bottom: 8px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -654,8 +672,8 @@ input {
 
 .intensity-option {
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
 }
 
@@ -668,8 +686,20 @@ input {
   position: absolute;
   inset: 3px;
   border: 1px solid var(--border);
-  border-radius: 5px;
+  border-radius: var(--win-radius-control, 4px);
   background: var(--empty);
+  transition:
+    border-color var(--win-motion-fast) linear,
+    transform var(--win-motion-standard) var(--win-motion-ease);
+}
+
+.intensity-option:hover span {
+  border-color: var(--border-strong);
+  transform: scale(1.08);
+}
+
+.intensity-option input:active + span {
+  transform: scale(1.02);
 }
 
 .intensity-option.level-1 span {
@@ -699,17 +729,30 @@ input {
   padding: 11px;
   resize: vertical;
   border: 1px solid var(--border-strong);
-  border-radius: 7px;
+  border-radius: var(--win-radius-control, 4px);
   color: var(--text);
   background: var(--bg);
   font-size: 12px;
   line-height: 1.5;
+  transition:
+    border-color var(--win-motion-fast) linear,
+    box-shadow var(--win-motion-fast) linear;
+}
+
+#note-text:hover {
+  border-color: var(--border);
+}
+
+#note-text:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  outline: none;
 }
 
 .note-hint {
   margin: 7px 0 0;
   color: var(--subtle);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .note-actions {
@@ -731,7 +774,7 @@ input {
   min-height: 34px;
   padding: 0 14px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -741,16 +784,45 @@ input {
   background: var(--accent);
 }
 
+.primary-button:hover {
+  filter: brightness(1.1);
+}
+
+.primary-button:active {
+  filter: brightness(0.92);
+}
+
 .secondary-button {
   border: 1px solid var(--border-strong);
   color: var(--text);
   background: var(--surface-elevated);
+  transition:
+    background var(--win-motion-fast) linear,
+    border-color var(--win-motion-fast) linear;
+}
+
+.secondary-button:hover {
+  background: var(--surface-hover);
+  border-color: var(--border);
+}
+
+.secondary-button:active {
+  transform: translateY(1px);
 }
 
 .delete-button {
   padding: 0;
   color: var(--danger);
   background: transparent;
+  transition: opacity var(--win-motion-fast) linear;
+}
+
+.delete-button:hover {
+  opacity: 0.8;
+}
+
+.delete-button:active {
+  opacity: 0.6;
 }
 
 @media (max-width: 430px) {
@@ -760,7 +832,7 @@ input {
 
   .hover-summary,
   .clock-hover-details {
-    font-size: 10px;
+    font-size: 12px;
     gap: 7px;
   }
 

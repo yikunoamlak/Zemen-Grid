@@ -1,6 +1,6 @@
 {
   "name": "zemen-grid",
-  "version": "2.3.1",
+  "version": "2.5.0",
   "description": "Two calm, always-on-top Ethiopian calendar desktop widgets.",
   "main": "electron/main.js",
   "author": "Zemen Grid",
